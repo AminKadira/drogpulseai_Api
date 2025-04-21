@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation DrogPulseAI</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="logo">
+                <h2>DrogPulseAI</h2>
+                <p class="tagline">Documentation technique</p>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#presentation" class="active"><i class="fas fa-info-circle"></i> Présentation</a></li>
+                <li><a href="#specifications"><i class="fas fa-list-check"></i> Spécifications</a></li>
+                <li><a href="#architecture"><i class="fas fa-layer-group"></i> Architecture</a></li>
+                <li>
+                    <a href="#android"><i class="fab fa-android"></i> Application Android</a>
+                    <ul class="submenu">
+                        <li><a href="#android-structure">Structure</a></li>
+                        <li><a href="#android-components">Composants</a></li>
+                        <li><a href="#android-screens">Écrans</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#api"><i class="fas fa-server"></i> API PHP</a>
+                    <ul class="submenu">
+                        <li><a href="#api-structure">Structure</a></li>
+                        <li><a href="#api-endpoints">Endpoints</a></li>
+                        <li><a href="#api-responses">Réponses</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#database"><i class="fas fa-database"></i> Base de données</a>
+                    <ul class="submenu">
+                        <li><a href="#db-schema">Schéma</a></li>
+                        <li><a href="#db-tables">Tables</a></li>
+                    </ul>
+                </li>
+                <li><a href="#installation"><i class="fas fa-download"></i> Installation</a></li>
+                <li><a href="#usage"><i class="fas fa-user"></i> Utilisation</a></li>
+                <li><a href="#security"><i class="fas fa-shield-alt"></i> Sécurité</a></li>
+                <li><a href="#maintenance"><i class="fas fa-wrench"></i> Maintenance</a></li>
+            </ul>
+        </nav>
+
+        <main class="content">
+            <header>
+                <div class="header-content">
+                    <h1>Documentation DrogPulseAI</h1>
+                    <p>Version 1.0 - 17/04/2025</p>
+                </div>
+            </header>
+
+            <section id="presentation" class="section">
+                <h2><i class="fas fa-info-circle"></i> Présentation Générale</h2>
+                <div class="section-content">
+                    <p><strong>DrogPulseAI</strong> est une application mobile de gestion de contacts professionnels développée spécifiquement pour les professionnels du secteur de la quincaillerie. Son slogan "Le rythme intelligent de votre quincaillerie" illustre sa mission : connecter, anticiper et optimiser les relations professionnelles.</p>
+                    
+                    <p>L'application est structurée selon une architecture en trois couches :</p>
+                    <ol>
+                        <li><strong>Application Android native</strong> (frontend)</li>
+                        <li><strong>API REST en PHP</strong> (backend)</li>
+                        <li><strong>Base de données MySQL</strong> (stockage)</li>
+                    </ol>
+
+                    <div class="diagram">
+                        <div class="diagram-box">Application Android</div>
+                        <div class="diagram-arrow">↔</div>
+                        <div class="diagram-box">API PHP (REST)</div>
+                        <div class="diagram-arrow">↔</div>
+                        <div class="diagram-box">BDD MySQL</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="specifications" class="section">
+                <h2><i class="fas fa-list-check"></i> Spécifications Fonctionnelles</h2>
+                <div class="section-content">
+                    <h3>Fonctionnalités principales</h3>
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <i class="fas fa-lock"></i>
+                            <h4>Authentification sécurisée</h4>
+                            <ul>
+                                <li>Login avec email/mot de passe</li>
+                                <li>Création de compte avec géolocalisation automatique</li>
+                            </ul>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-address-book"></i>
+                            <h4>Gestion des contacts</h4>
+                            <ul>
+                                <li>Création de contacts avec informations complètes</li>
+                                <li>Visualisation de la liste des contacts</li>
+                                <li>Recherche multicritères</li>
+                                <li>Modification et suppression</li>
+                            </ul>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-location-dot"></i>
+                            <h4>Géolocalisation</h4>
+                            <ul>
+                                <li>Capture automatique des coordonnées GPS</li>
+                                <li>Stockage de la position pour chaque contact</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h3>Parcours utilisateur</h3>
+                    <div class="flow-diagram">
+                        <div class="flow-step">
+                            <div class="flow-number">1</div>
+                            <h4>Inscription/Connexion</h4>
+                            <p>L'utilisateur crée un compte ou se connecte. Ses coordonnées GPS sont automatiquement capturées lors de l'inscription.</p>
+                        </div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step">
+                            <div class="flow-number">2</div>
+                            <h4>Page d'accueil</h4>
+                            <p>Affichage de la liste des contacts existants. Possibilité de rafraîchir et d'ajouter des contacts.</p>
+                        </div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step">
+                            <div class="flow-number">3</div>
+                            <h4>Création/Modification</h4>
+                            <p>Formulaire avec champs et capture automatique de la position GPS.</p>
+                        </div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step">
+                            <div class="flow-number">4</div>
+                            <h4>Recherche</h4>
+                            <p>Filtrage par nom, prénom ou téléphone avec résultats instantanés.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="architecture" class="section">
+                <h2><i class="fas fa-layer-group"></i> Architecture Technique</h2>
+                <div class="section-content">
+                    <p>L'architecture de DrogPulseAI suit le modèle client-serveur, avec une séparation claire entre les trois couches principales. Cette organisation assure une maintenance facilitée et une évolutivité optimale.</p>
+                    
+                    <div class="tech-diagram">
+                        <div class="tech-layer">
+                            <h3>Frontend</h3>
+                            <div class="tech-box">Application Android native (Java)</div>
+                            <ul class="tech-points">
+                                <li>Interface utilisateur</li>
+                                <li>Logique de présentation</li>
+                                <li>Gestion des requêtes API</li>
+                            </ul>
+                        </div>
+                        <div class="tech-layer">
+                            <h3>Backend</h3>
+                            <div class="tech-box">API REST (PHP)</div>
+                            <ul class="tech-points">
+                                <li>Traitement des requêtes</li>
+                                <li>Logique métier</li>
+                                <li>Sécurité et validation</li>
+                            </ul>
+                        </div>
+                        <div class="tech-layer">
+                            <h3>Stockage</h3>
+                            <div class="tech-box">Base de données MySQL</div>
+                            <ul class="tech-points">
+                                <li>Stockage persistant</li>
+                                <li>Relations et contraintes</li>
+                                <li>Indexation pour performance</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="android" class="section">
+                <h2><i class="fab fa-android"></i> Couche Application Android</h2>
+                <div class="section-content">
+                    <h3 id="android-structure">Structure du projet</h3>
+                    <div class="code-block">
+<pre>app/
+├── build.gradle.kts           # Configuration Gradle
+├── src/main/
+    ├── java/com/drogpulseai/  # Code source Java
+    │   ├── activities/        # Écrans de l'application
+    │   ├── adapters/          # Adaptateurs pour RecyclerView
+    │   ├── api/               # Configuration API
+    │   ├── models/            # Modèles de données
+    │   └── utils/             # Utilitaires
+    ├── res/                   # Ressources
+    └── AndroidManifest.xml    # Configuration Android</pre>
+                    </div>
+
+                    <h3 id="android-components">Composants principaux</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Composant</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Activities</td>
+                                    <td>Écrans d'UI pour l'interaction utilisateur</td>
+                                </tr>
+                                <tr>
+                                    <td>Retrofit</td>
+                                    <td>Bibliothèque pour les appels API REST</td>
+                                </tr>
+                                <tr>
+                                    <td>RecyclerView</td>
+                                    <td>Affichage optimisé des listes</td>
+                                </tr>
+                                <tr>
+                                    <td>Google Play Services</td>
+                                    <td>Services de géolocalisation</td>
+                                </tr>
+                                <tr>
+                                    <td>SharedPreferences</td>
+                                    <td>Stockage local pour la session utilisateur</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3 id="android-screens">Écrans de l'application</h3>
+                    <div class="screens-grid">
+                        <div class="screen-card">
+                            <h4>LoginActivity</h4>
+                            <p>Écran d'authentification avec email et mot de passe</p>
+                        </div>
+                        <div class="screen-card">
+                            <h4>RegisterActivity</h4>
+                            <p>Création de compte utilisateur avec capture de localisation</p>
+                        </div>
+                        <div class="screen-card">
+                            <h4>MainActivity</h4>
+                            <p>Liste des contacts avec recherche et options de menu</p>
+                        </div>
+                        <div class="screen-card">
+                            <h4>ContactFormActivity</h4>
+                            <p>Formulaire de création/modification de contact</p>
+                        </div>
+                        <div class="screen-card">
+                            <h4>ContactSearchActivity</h4>
+                            <p>Recherche avancée de contacts</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="api" class="section">
+                <h2><i class="fas fa-server"></i> Couche API PHP</h2>
+                <div class="section-content">
+                    <h3 id="api-structure">Structure des fichiers</h3>
+                    <div class="code-block">
+<pre>api/
+├── auth/                 # Authentification
+│   ├── login.php
+│   └── register.php
+├── contacts/             # Gestion des contacts
+│   ├── list.php
+│   ├── search.php
+│   ├── create.php
+│   ├── update.php
+│   ├── delete.php
+│   └── details.php
+├── config/               # Configuration
+│   └── database.php
+└── utils/                # Utilitaires
+    └── response.php</pre>
+                    </div>
+
+                    <h3 id="api-endpoints">Endpoints API</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Méthode</th>
+                                    <th>URL</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>POST</td>
+                                    <td>/auth/login.php</td>
+                                    <td>Authentification</td>
+                                </tr>
+                                <tr>
+                                    <td>POST</td>
+                                    <td>/auth/register.php</td>
+                                    <td>Création de compte</td>
+                                </tr>
+                                <tr>
+                                    <td>GET</td>
+                                    <td>/contacts/list.php</td>
+                                    <td>Liste des contacts</td>
+                                </tr>
+                                <tr>
+                                    <td>GET</td>
+                                    <td>/contacts/search.php</td>
+                                    <td>Recherche de contacts</td>
+                                </tr>
+                                <tr>
+                                    <td>GET</td>
+                                    <td>/contacts/details.php</td>
+                                    <td>Détails d'un contact</td>
+                                </tr>
+                                <tr>
+                                    <td>POST</td>
+                                    <td>/contacts/create.php</td>
+                                    <td>Création d'un contact</td>
+                                </tr>
+                                <tr>
+                                    <td>PUT</td>
+                                    <td>/contacts/update.php</td>
+                                    <td>Mise à jour d'un contact</td>
+                                </tr>
+                                <tr>
+                                    <td>DELETE</td>
+                                    <td>/contacts/delete.php</td>
+                                    <td>Suppression d'un contact</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3 id="api-responses">Format des réponses</h3>
+                    <div class="code-block json">
+<pre>{
+    "success": true/false,
+    "message": "Message informatif",
+    "data": { /* Données optionnelles */ }
+}</pre>
+                    </div>
+                </div>
+            </section>
+
+            <section id="database" class="section">
+                <h2><i class="fas fa-database"></i> Couche Base de Données</h2>
+                <div class="section-content">
+                    <h3 id="db-schema">Schéma de la base de données</h3>
+                    <div class="db-schema">
+                        <div class="db-table">
+                            <div class="db-table-title">users</div>
+                            <div class="db-table-content">
+                                <div><strong>id</strong> (PK)</div>
+                                <div>nom</div>
+                                <div>prenom</div>
+                                <div>telephone</div>
+                                <div>latitude</div>
+                                <div>longitude</div>
+                                <div>email (unique)</div>
+                                <div>password</div>
+                                <div>created_at</div>
+                                <div>updated_at</div>
+                            </div>
+                        </div>
+                        <div class="db-relation">
+                            <div class="db-relation-line"></div>
+                            <div class="db-relation-text">1:n</div>
+                        </div>
+                        <div class="db-table">
+                            <div class="db-table-title">contacts</div>
+                            <div class="db-table-content">
+                                <div><strong>id</strong> (PK)</div>
+                                <div>nom</div>
+                                <div>prenom</div>
+                                <div>telephone</div>
+                                <div>email</div>
+                                <div>notes</div>
+                                <div>latitude</div>
+                                <div>longitude</div>
+                                <div><strong>user_id</strong> (FK)</div>
+                                <div>created_at</div>
+                                <div>updated_at</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 id="db-tables">Scripts SQL des tables</h3>
+                    <p><strong>Table users</strong></p>
+                    <div class="code-block sql">
+<pre>CREATE TABLE `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nom` varchar(100) NOT NULL,
+  `prenom` varchar(100) NOT NULL,
+  `telephone` varchar(20) NOT NULL,
+  `latitude` double NOT NULL,
+  `longitude` double NOT NULL,
+  `email` varchar(100) NOT NULL UNIQUE,
+  `password` varchar(255) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+);</pre>
+                    </div>
+
+                    <p><strong>Table contacts</strong></p>
+                    <div class="code-block sql">
+<pre>CREATE TABLE `contacts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nom` varchar(100) NOT NULL,
+  `prenom` varchar(100) NOT NULL,
+  `telephone` varchar(20) NOT NULL,
+  `email` varchar(100) NULL,
+  `notes` text NULL,
+  `latitude` double NOT NULL,
+  `longitude` double NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+);</pre>
+                    </div>
+                </div>
+            </section>
+
+            <section id="installation" class="section">
+                <h2><i class="fas fa-download"></i> Guide d'Installation</h2>
+                <div class="section-content">
+                    <h3>Prérequis</h3>
+                    <div class="prereq-container">
+                        <div class="prereq-box">
+                            <h4>Serveur</h4>
+                            <ul>
+                                <li>WampServer, XAMPP ou équivalent</li>
+                                <li>PHP 7.4+</li>
+                                <li>MySQL 5.7+</li>
+                            </ul>
+                        </div>
+                        <div class="prereq-box">
+                            <h4>Développement Android</h4>
+                            <ul>
+                                <li>Android Studio</li>
+                                <li>JDK 8+</li>
+                                <li>SDK Android (API level 24+)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h3>Déploiement du Backend</h3>
+                    <div class="steps-container">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>Création de la base de données</h4>
+                                <div class="code-block sql">
+<pre>CREATE DATABASE drogpulseai;
+USE drogpulseai;
+
+-- Exécuter ensuite les scripts de création des tables</pre>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>Installation des fichiers API</h4>
+                                <ul>
+                                    <li>Copier le dossier <code>api</code> dans le répertoire web (ex: <code>www/drogpulseai/</code>)</li>
+                                    <li>Configurer les paramètres de connexion dans <code>config/database.php</code></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>Configuration du serveur web</h4>
+                                <ul>
+                                    <li>Assurez-vous que le module <code>mod_rewrite</code> est activé (Apache)</li>
+                                    <li>Vérifiez que les extensions PHP <code>pdo_mysql</code> et <code>json</code> sont activées</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3>Déploiement de l'Application</h3>
+                    <div class="steps-container">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>Configuration de l'API URL</h4>
+                                <p>Modifier l'URL de base dans <code>ApiClient.java</code> :</p>
+                                <div class="code-block java">
+<pre>private static final String BASE_URL = "http://votre-serveur.com/drogpulseai/api/";</pre>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>Génération de l'APK</h4>
+                                <ul>
+                                    <li>Dans Android Studio : Build > Generate Signed Bundle / APK</li>
+                                    <li>Sélectionner APK et suivre les instructions</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>Installation sur les appareils</h4>
+                                <ul>
+                                    <li>Transférer l'APK généré sur les appareils</li>
+                                    <li>Installer en permettant les sources inconnues</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="usage" class="section">
+                <h2><i class="fas fa-user"></i> Guide d'utilisation</h2>
+                <div class="section-content">
+                    <h3>Création d'un compte</h3>
+                    <ol class="usage-steps">
+                        <li>Lancer l'application DrogPulseAI</li>
+                        <li>Cliquer sur "S'inscrire"</li>
+                        <li>Remplir le formulaire avec les informations requises</li>
+                        <li>Accepter les permissions de localisation</li>
+                        <li>Valider l'inscription</li>
+                    </ol>
+
+                    <h3>Gestion des contacts</h3>
+                    <div class="usage-container">
+                        <div class="usage-card">
+                            <h4><i class="fas fa-plus-circle"></i> Ajouter un contact</h4>
+                            <ol>
+                                <li>Sur l'écran principal, appuyer sur le bouton "+" en bas à droite</li>
+                                <li>Remplir le formulaire de contact</li>
+                                <li>Appuyer sur "Enregistrer"</li>
+                            </ol>
+                        </div>
+                        <div class="usage-card">
+                            <h4><i class="fas fa-search"></i> Rechercher un contact</h4>
+                            <ol>
+                                <li>Appuyer sur l'icône de recherche dans la barre d'action</li>
+                                <li>Saisir le nom, prénom ou téléphone recherché</li>
+                                <li>Les résultats s'affichent automatiquement</li>
+                            </ol>
+                        </div>
+                        <div class="usage-card">
+                            <h4><i class="fas fa-edit"></i> Modifier/Supprimer un contact</h4>
+                            <ol>
+                                <li>Dans la liste des contacts, appuyer sur le contact à modifier</li>
+                                <li>Modifier les informations souhaitées</li>
+                                <li>Appuyer sur "Enregistrer" pour valider les modifications</li>
+                                <li>Ou appuyer sur "Supprimer" pour supprimer le contact</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="security" class="section">
+                <h2><i class="fas fa-shield-alt"></i> Sécurité et Performance</h2>
+                <div class="section-content">
+                    <h3>Mesures de sécurité</h3>
+                    <div class="security-grid">
+                        <div class="security-card">
+                            <i class="fas fa-key"></i>
+                            <h4>Authentification</h4>
+                            <p>Mots de passe hashés avec password_hash (PHP)</p>
+                        </div>
+                        <div class="security-card">
+                            <i class="fas fa-database"></i>
+                            <h4>Injection SQL</h4>
+                            <p>Utilisation de requêtes préparées (PDO)</p>
+                        </div>
+                        <div class="security-card">
+                            <i class="fas fa-lock"></i>
+                            <h4>Transport</h4>
+                            <p>HTTPS recommandé en production</p>
+                        </div>
+                        <div class="security-card">
+                            <i class="fas fa-check-double"></i>
+                            <h4>Validation</h4>
+                            <p>Double validation des données (client + serveur)</p>
+                        </div>
+                    </div>
+
+                    <h3>Optimisations de performance</h3>
+                    <div class="performance-grid">
+                        <div class="performance-card">
+                            <i class="fas fa-recycle"></i>
+                            <h4>Recyclage des vues</h4>
+                            <p>RecyclerView pour des listes fluides</p>
+                        </div>
+                        <div class="performance-card">
+                            <i class="fas fa-hdd"></i>
+                            <h4>Mise en cache</h4>
+                            <p>Images et données temporaires</p>
+                        </div>
+                        <div class="performance-card">
+                            <i class="fas fa-tasks"></i>
+                            <h4>Requêtes asynchrones</h4>
+                            <p>Toutes les opérations réseau</p>
+                        </div>
+                        <div class="performance-card">
+                            <i class="fas fa-book-open"></i>
+                            <h4>Pagination</h4>
+                            <p>Chargement par lots des contacts nombreux</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="maintenance" class="section">
+                <h2><i class="fas fa-wrench"></i> Maintenance et Évolutions</h2>
+                <div class="section-content">
+                    <h3>Procédures de maintenance</h3>
+                    <div class="maintenance-container">
+                        <div class="maintenance-item">
+                            <i class="fas fa-database"></i>
+                            <h4>Sauvegarde BDD</h4>
+                            <p>Backup quotidien recommandé</p>
+                        </div>
+                        <div class="maintenance-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <h4>Mise à jour sécurité</h4>
+                            <p>Vérification mensuelle des dépendances</p>
+                        </div>
+                        <div class="maintenance-item">
+                            <i class="fas fa-file-alt"></i>
+                            <h4>Logs</h4>
+                            <p>Surveillance des erreurs API via les logs serveur</p>
+                        </div>
+                    </div>
+
+                    <h3>Évolutions possibles</h3>
+                    <div class="evolution-container">
+                        <div class="evolution-card">
+                            <i class="fas fa-map-marked-alt"></i>
+                            <div class="evolution-content">
+                                <h4>Cartographie</h4>
+                                <p>Visualisation des contacts sur une carte</p>
+                            </div>
+                        </div>
+                        <div class="evolution-card">
+                            <i class="fas fa-wifi-slash"></i>
+                            <div class="evolution-content">
+                                <h4>Synchronisation hors-ligne</h4>
+                                <p>Support du mode déconnecté</p>
+                            </div>
+                        </div>
+                        <div class="evolution-card">
+                            <i class="fas fa-bell"></i>
+                            <div class="evolution-content">
+                                <h4>Notifications push</h4>
+                                <p>Alertes pour nouveaux contacts</p>
+                            </div>
+                        </div>
+                        <div class="evolution-card">
+                            <i class="fas fa-file-export"></i>
+                            <div class="evolution-content">
+                                <h4>Import/Export</h4>
+                                <p>Fonctionnalités CSV/vCard</p>
+                            </div>
+                        </div>
+                        <div class="evolution-card">
+                            <i class="fab fa-apple"></i>
+                            <div class="evolution-content">
+                                <h4>Version iOS</h4>
+                                <p>Portage vers la plateforme Apple</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <footer>
+                <div class="footer-content">
+                    <p>Documentation DrogPulseAI - Version 1.0</p>
+                    <p>© 2025 DrogPulseAI. Tous droits réservés.</p>
+                    <div class="footer-contact">
+                        <p><strong>Support Technique :</strong> support@drogpulseai.com</p>
+                        <p><strong>Développement :</strong> dev@drogpulseai.com</p>
+                    </div>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
