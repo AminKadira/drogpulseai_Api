@@ -1,0 +1,487 @@
+{
+	"info": {
+		"_postman_id": "b3657830-9dac-42fe-b2b8-0139dd5be558",
+		"name": "DrogPulseAI API Tests",
+		"description": "Collection de tests pour l'API DrogPulseAI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33842771"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Removed the redundant semicolon\r",
+									"pm.test(\"Response has required fields\", function () {\r",
+									"    pm.expect(pm.response.json()).to.have.property('error_message');\r",
+									"});\r",
+									"var template = `\r",
+									"<style type=\"text/css\">\r",
+									"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+									"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+									"    .tftable tr {background-color:#ffffff;}\r",
+									"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+									"    .tftable tr:hover {background-color:#e0ffff;}\r",
+									"</style>\r",
+									"\r",
+									"<table class=\"tftable\" border=\"1\">\r",
+									"    <tr>\r",
+									"        <th>Error Message</th>\r",
+									"    </tr>\r",
+									"    <tr>\r",
+									"        <td>{{response}}</td>\r",
+									"    </tr>\r",
+									"</table>\r",
+									"`;\r",
+									"\r",
+									"function constructVisualizerPayload() {\r",
+									"    return { response: \"Erreur de connexion : SQLSTATE[HY000] [1049] Base ' drogpulseai' inconnue\" };\r",
+									"}\r",
+									"\r",
+									"pm.visualizer.set(template, constructVisualizerPayload());"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"packages": {},
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"laridak@gmail.com\",\n    \"password\": \"12345\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login.php",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login.php"
+							]
+						},
+						"description": "Authentification utilisateur"
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nom\": \"Dupont\",\r\n    \"prenom\": \"Jean\",\r\n    \"telephone\": \"0123456789\",\r\n    \"email\": \"jean.dupont@example.com\",\r\n    \"password\": \"motdepasse\",\r\n    \"latitude\": 48.8566,\r\n    \"longitude\": 2.3522\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/register.php",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"register.php"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Tests pour les endpoints d'authentification"
+		},
+		{
+			"name": "Contacts",
+			"item": [
+				{
+					"name": "Get All Contacts",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var template = `\r",
+									"<style type=\"text/css\">\r",
+									"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+									"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+									"    .tftable tr {background-color:#ffffff;}\r",
+									"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+									"    .tftable tr:hover {background-color:#e0ffff;}\r",
+									"</style>\r",
+									"\r",
+									"<table class=\"tftable\" border=\"1\">\r",
+									"    <tr>\r",
+									"        <th>Error Message</th>\r",
+									"    </tr>\r",
+									"    <tr>\r",
+									"        <td>{{response}}</td>\r",
+									"    </tr>\r",
+									"</table>\r",
+									"`;\r",
+									"\r",
+									"function constructVisualizerPayload() {\r",
+									"    return { response: pm.response.text() }\r",
+									"}\r",
+									"\r",
+									"pm.visualizer.set(template, constructVisualizerPayload());"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/contacts/list.php?user_id={{userId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"contacts",
+								"list.php"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{userId}}"
+								}
+							]
+						},
+						"description": "Récupération de tous les contacts d'un utilisateur"
+					},
+					"response": []
+				},
+				{
+					"name": "Search Contacts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/contacts/search.php?user_id={{userId}}&query=Du",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"contacts",
+								"search.php"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{userId}}"
+								},
+								{
+									"key": "query",
+									"value": "Du"
+								}
+							]
+						},
+						"description": "Recherche de contacts par nom, prénom ou téléphone"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Contact Details",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/contacts/details.php?id={{contactId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"contacts",
+								"details.php"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{contactId}}"
+								}
+							]
+						},
+						"description": "Récupération des détails d'un contact spécifique"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Contact",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nom\": \"Martin\",\n    \"prenom\": \"Sophie\",\n    \"telephone\": \"0698765432\",\n    \"email\": \"sophie.martin@example.com\",\n    \"notes\": \"Contact professionnel\",\n    \"latitude\": 48.8534,\n    \"longitude\": 2.3488,\n    \"userId\": {{userId}}\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/contacts/create.php",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"contacts",
+								"create.php"
+							]
+						},
+						"description": "Création d'un nouveau contact"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Contact",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": {{contactId}},\n    \"nom\": \"Martin\",\n    \"prenom\": \"PRenom\",\n    \"telephone\": \"0698765432\",\n    \"email\": \"sophie.martin@example.com\",\n    \"notes\": \"Contact professionnel modifié\",\n    \"latitude\": 48.8534,\n    \"longitude\": 2.3488,\n    \"userId\": {{userId}}\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/contacts/update.php",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"contacts",
+								"update.php"
+							]
+						},
+						"description": "Mise à jour d'un contact existant"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Contact",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/contacts/delete.php?id={{contactId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"contacts",
+								"delete.php"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{contactId}}"
+								}
+							]
+						},
+						"description": "Suppression d'un contact"
+					},
+					"response": []
+				}
+			],
+			"description": "Tests pour les endpoints de gestion des contacts"
+		},
+		{
+			"name": "Contacts",
+			"item": [
+				{
+					"name": "createContact",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nom\": \"KADIRA\",\r\n  \"prenom\": \"Ahmed\",\r\n  \"telephone\": \"0612345678\",\r\n  \"email\": \"AhmedKadira@drogpulseai.com\",\r\n  \"notes\": \"Contact professionnel\",\r\n  \"latitude\": 48.8566,\r\n  \"longitude\": -2.3522,\r\n  \"userId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/contacts/create.php",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"contacts",
+								"create.php"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "New Request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"reference\": \"PROD-003\",\r\n    \"label\": \"Tournevis Phillips\",\r\n    \"name\": \"Tournevis Phillips Premium\",\r\n    \"description\": \"Tournevis avec manche ergonomique et embout Phillips\",\r\n    \"photo_url\": \"C:/Users/LARIDAK/Desktop/picTestjpeg.jpg\",\r\n    \"barcode\": \"123456789012\",\r\n    \"quantity\": 25,\r\n    \"userId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/products/create.php",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"create.php"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ping",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{baseUrl}}/ping.php",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"ping.php"
+					]
+				},
+				"description": "Inscription d'un nouvel utilisateur"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"pm.test(\"Status code is 200\", function () {",
+					"    pm.response.to.have.status(200);",
+					"});",
+					"",
+					"pm.test(\"Response has required fields\", function () {",
+					"    var jsonData = pm.response.json();",
+					"    pm.expect(jsonData).to.have.property('success');",
+					"});"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://192.168.1.34/drogpulseai_Api/api",
+			"type": "string"
+		},
+		{
+			"key": "userId",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "contactId",
+			"value": "1",
+			"type": "string"
+		}
+	]
+}
