@@ -616,7 +616,7 @@ CREATE TABLE `products` (
 ### 8.3 Contacts et support
 
 Pour toute question ou assistance, contacter :
-- Responsable technique : [nom@email.com]
+- Responsable technique : [aminkadira@gmail.com]
 - Support développement : [support@drogpulseai.com]
 
 ---
