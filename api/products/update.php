@@ -44,13 +44,34 @@ if (empty($data) || !is_object($data)) {
     }
 }
 
-// Vérification des données requises
-if (empty($data->id) || empty($data->reference) || empty($data->label) ||
-    empty($data->name) || empty($data->userId)) {
-    Response::error("Données incomplètes pour mettre à jour le produit");
-    exit;
+// Vérification des données requises avec détail des champs manquants
+$missingFields = [];
+if (empty($data->reference)) $missingFields[] = "reference";
+if (empty($data->label)) $missingFields[] = "label";
+if (empty($data->name)) $missingFields[] = "name";
+// Vérifier plusieurs variations possibles du champ userId
+$hasUserId = false;
+if (!empty($data->userId)) $hasUserId = true;
+else if (!empty($data->user_id)) {
+    $hasUserId = true;
+    $data->userId = $data->user_id;  // Normaliser pour utilisation ultérieure
+}
+else if (!empty($data->userID)) {
+    $hasUserId = true;
+    $data->userId = $data->userID;  // Normaliser pour utilisation ultérieure
+}
+else if (!empty($data->userid)) {
+    $hasUserId = true;
+    $data->userId = $data->userid;  // Normaliser pour utilisation ultérieure
 }
 
+if (!$hasUserId) $missingFields[] = "userId";
+
+if (!empty($missingFields)) {
+    $errorMessage = "Données incomplètes pour mettre à jour un produit. Champs manquants: " . implode(", ", $missingFields);
+    Response::error($errorMessage);
+    exit;
+}
 // Connexion à la base de données
 $database = new Database();
 $db = $database->getConnection();

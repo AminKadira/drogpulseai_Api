@@ -9,7 +9,7 @@ header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-mysqli_set_charset($conn, "utf8mb4");
+
 // Gestion des requêtes OPTIONS (pre-flight)
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
@@ -42,10 +42,32 @@ if (empty($data) || !is_object($data)) {
     $data->userId = filter_input(INPUT_POST, 'userId', FILTER_SANITIZE_NUMBER_INT);
 }
 
-// Vérification des données requises
-if (empty($data->reference) || empty($data->label) || 
-    empty($data->name) || empty($data->userId)) {
-    Response::error("Données incomplètes pour créer un produit");
+// Vérification des données requises avec détail des champs manquants
+$missingFields = [];
+if (empty($data->reference)) $missingFields[] = "reference";
+if (empty($data->label)) $missingFields[] = "label";
+if (empty($data->name)) $missingFields[] = "name";
+// Vérifier plusieurs variations possibles du champ userId
+$hasUserId = false;
+if (!empty($data->userId)) $hasUserId = true;
+else if (!empty($data->user_id)) {
+    $hasUserId = true;
+    $data->userId = $data->user_id;  // Normaliser pour utilisation ultérieure
+}
+else if (!empty($data->userID)) {
+    $hasUserId = true;
+    $data->userId = $data->userID;  // Normaliser pour utilisation ultérieure
+}
+else if (!empty($data->userid)) {
+    $hasUserId = true;
+    $data->userId = $data->userid;  // Normaliser pour utilisation ultérieure
+}
+
+if (!$hasUserId) $missingFields[] = "userId";
+
+if (!empty($missingFields)) {
+    $errorMessage = "Données incomplètes pour créer un produit. Champs manquants: " . implode(", ", $missingFields);
+    Response::error($errorMessage);
     exit;
 }
 

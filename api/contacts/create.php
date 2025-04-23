@@ -39,12 +39,20 @@ if (empty($data) || !is_object($data)) {
 }
 
 // Vérification des données requises
-if (empty($data->nom) || empty($data->prenom) || empty($data->telephone) ||
-    !isset($data->latitude) || !isset($data->longitude) ) {
-    Response::error("Données incomplètes pour créer un contact");
+
+$missingFields = [];
+if (empty($data->nom)) $missingFields[] = "nom";
+if (empty($data->prenom)) $missingFields[] = "prenom";
+if (empty($data->telephone)) $missingFields[] = "telephone";
+if (empty($data->latitude)) $missingFields[] = "latitude";
+if (empty($data->longitude)) $missingFields[] = "longitude";
+
+
+if (!empty($missingFields)) {
+    $errorMessage = "Données incomplètes pour mettre à jour un produit. Champs manquants: " . implode(", ", $missingFields);
+    Response::error($errorMessage);
     exit;
 }
-
 // Connexion à la base de données
 $database = new Database();
 $db = $database->getConnection();

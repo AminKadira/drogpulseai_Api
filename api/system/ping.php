@@ -9,7 +9,7 @@ header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
 // Inclure la configuration de la base de données
-include_once './config/database.php';
+include_once '../config/database.php';
 
 
 // Vérification de la méthode de requête
