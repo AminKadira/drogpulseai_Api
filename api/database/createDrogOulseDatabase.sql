@@ -74,3 +74,8 @@ CREATE INDEX idx_contacts_user_id ON contacts(user_id);
 CREATE INDEX idx_products_user_id ON products(user_id);
 CREATE INDEX idx_contacts_search ON contacts(nom, prenom, telephone);
 CREATE INDEX idx_products_search ON products(reference, label, name, barcode);
+
+-- Ajouter le champ price à la table products s'il n'existe pas déjà
+ALTER TABLE `products` 
+ADD COLUMN IF NOT EXISTS `price` DECIMAL(10,2) DEFAULT 0.00 
+COMMENT 'Prix du produit';
