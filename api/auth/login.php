@@ -15,10 +15,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 // Inclure les fichiers de configuration et d'utilitaires
 require_once '../config/database.php';
 require_once '../utils/response.php';
+// Gestion des requêtes OPTIONS (pre-flight pour CORS)
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
 
 // Vérification de la méthode de requête
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    Response::error("Méthode non autorisée", 405);
+    // Ajouter du log pour débogage
+    error_log("Méthode incorrecte reçue: " . $_SERVER['REQUEST_METHOD']);
+    
+    http_response_code(405);
+    echo json_encode([
+        "success" => false,
+        "message" => "Méthode non autorisée. Utilisez POST."
+    ]);
     exit;
 }
 
