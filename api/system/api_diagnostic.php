@@ -23,7 +23,7 @@ header('Content-Type: text/html; charset=utf-8');
         <h2>1. Vérification de la connexion à la base de données</h2>
         <?php
         // Inclure les fichiers de configuration
-        require_once 'api/config/database.php';
+        require_once '../config/database.php';
         
         try {
             $database = new Database();
