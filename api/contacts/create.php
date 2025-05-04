@@ -47,6 +47,23 @@ if (empty($data->telephone)) $missingFields[] = "telephone";
 if (empty($data->latitude)) $missingFields[] = "latitude";
 if (empty($data->longitude)) $missingFields[] = "longitude";
 
+// Vérifier plusieurs variations possibles du champ userId
+$hasUserId = false;
+if (!empty($data->userId)) $hasUserId = true;
+else if (!empty($data->user_id)) {
+    $hasUserId = true;
+    $data->userId = $data->user_id;  // Normaliser pour utilisation ultérieure
+}
+else if (!empty($data->userID)) {
+    $hasUserId = true;
+    $data->userId = $data->userID;  // Normaliser pour utilisation ultérieure
+}
+else if (!empty($data->userid)) {
+    $hasUserId = true;
+    $data->userId = $data->userid;  // Normaliser pour utilisation ultérieure
+}
+
+if (!$hasUserId) $missingFields[] = "userId";
 
 if (!empty($missingFields)) {
     $errorMessage = "Données incomplètes pour mettre à jour un produit. Champs manquants: " . implode(", ", $missingFields);
@@ -71,7 +88,7 @@ try {
     $user_stmt->execute();
     
     if ($user_stmt->fetchColumn() == 0) {
-        Response::error("Utilisateur inexistant", 404);
+        Response::error("Utilisateur inexistant :".$user_id, 404);
         exit;
     }
     
