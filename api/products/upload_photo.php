@@ -65,7 +65,7 @@ if (move_uploaded_file($_FILES['photo']['tmp_name'], $target_path)) {
     $relative_path = 'uploads/products/' . $file_name;
     
     Response::success([
-        'photo_url' => $relative_path
+        'data' => $relative_path
     ], "Fichier uploadé avec succès");
 } else {
     Response::error("Erreur lors de l'upload du fichier");
