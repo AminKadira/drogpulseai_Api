@@ -39,6 +39,7 @@ if (empty($data) || !is_object($data)) {
     $data->photo_url = filter_input(INPUT_POST, 'photo_url', FILTER_SANITIZE_STRING);
     $data->barcode = filter_input(INPUT_POST, 'barcode', FILTER_SANITIZE_STRING);
     $data->quantity = filter_input(INPUT_POST, 'quantity', FILTER_SANITIZE_NUMBER_INT);
+    $data->price = filter_input(INPUT_POST, 'price', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
     $data->userId = filter_input(INPUT_POST, 'userId', FILTER_SANITIZE_NUMBER_INT);
 }
 
@@ -106,9 +107,9 @@ try {
     
     // Préparation de la requête d'insertion
     $query = "INSERT INTO products (reference, label, name, description, photo_url, 
-                                   barcode, quantity, user_id)
+                                   barcode, quantity, price, user_id)
               VALUES (:reference, :label, :name, :description, :photo_url, 
-                     :barcode, :quantity, :user_id)";
+                     :barcode, :quantity, :price, :user_id)";
    
     $stmt = $db->prepare($query);
    
@@ -120,6 +121,7 @@ try {
     $photo_url = !empty($data->photo_url) ? htmlspecialchars(strip_tags($data->photo_url)) : null;
     $barcode = !empty($data->barcode) ? htmlspecialchars(strip_tags($data->barcode)) : null;
     $quantity = !empty($data->quantity) ? intval($data->quantity) : 0;
+    $price = !empty($data->price) ? floatval($data->price) : 0.00;
     
     // Liaison des paramètres
     $stmt->bindParam(":reference", $reference);
@@ -129,6 +131,7 @@ try {
     $stmt->bindParam(":photo_url", $photo_url);
     $stmt->bindParam(":barcode", $barcode);
     $stmt->bindParam(":quantity", $quantity);
+    $stmt->bindParam(":price", $price);
     $stmt->bindParam(":user_id", $user_id);
    
     // Exécution de la requête
@@ -137,7 +140,7 @@ try {
         
         // Récupérer le produit créé pour confirmation
         $product_query = "SELECT id, reference, label, name, description, photo_url, 
-                          barcode, quantity, user_id
+                          barcode, quantity, price, user_id
                           FROM products WHERE id = :id";
         $product_stmt = $db->prepare($product_query);
         $product_stmt->bindParam(":id", $product_id);

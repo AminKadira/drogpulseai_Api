@@ -36,6 +36,7 @@ if (empty($data) || !is_object($data)) {
     $data->photo_url = filter_input(INPUT_POST, 'photo_url', FILTER_SANITIZE_STRING);
     $data->barcode = filter_input(INPUT_POST, 'barcode', FILTER_SANITIZE_STRING);
     $data->quantity = filter_input(INPUT_POST, 'quantity', FILTER_SANITIZE_NUMBER_INT);
+    $data->price = filter_input(INPUT_POST, 'price', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
     $data->userId = filter_input(INPUT_POST, 'userId', FILTER_SANITIZE_NUMBER_INT);
     
     // Vérifier aussi user_id au cas où c'est ce format qui est utilisé
@@ -119,6 +120,7 @@ try {
                   photo_url = :photo_url, 
                   barcode = :barcode, 
                   quantity = :quantity,
+                  price = :price,
                   updated_at = NOW()
               WHERE id = :id AND user_id = :user_id";
     
@@ -132,6 +134,7 @@ try {
     $photo_url = !empty($data->photo_url) ? htmlspecialchars(strip_tags($data->photo_url)) : null;
     $barcode = !empty($data->barcode) ? htmlspecialchars(strip_tags($data->barcode)) : null;
     $quantity = !empty($data->quantity) ? intval($data->quantity) : 0;
+    $price = !empty($data->price) ? floatval($data->price) : 0.00;
     
     // Liaison des paramètres
     $stmt->bindParam(":id", $id);
@@ -142,13 +145,14 @@ try {
     $stmt->bindParam(":photo_url", $photo_url);
     $stmt->bindParam(":barcode", $barcode);
     $stmt->bindParam(":quantity", $quantity);
+    $stmt->bindParam(":price", $price);
     $stmt->bindParam(":user_id", $user_id);
     
     // Exécution de la requête
     if ($stmt->execute()) {
         // Récupérer le produit mis à jour pour confirmation
         $get_query = "SELECT id, reference, label, name, description, photo_url, 
-                      barcode, quantity, user_id, created_at, updated_at
+                      barcode, quantity, price, user_id, created_at, updated_at
                       FROM products WHERE id = :id";
         $get_stmt = $db->prepare($get_query);
         $get_stmt->bindParam(":id", $id);

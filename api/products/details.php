@@ -55,6 +55,7 @@ try {
             "photo_url" => $row['photo_url'],
             "barcode" => $row['barcode'],
             "quantity" => $row['quantity'],
+            "price" => $row['price'],
             "user_id" => $row['user_id'],
             "created_at" => $row['created_at'],
             "updated_at" => $row['updated_at']
