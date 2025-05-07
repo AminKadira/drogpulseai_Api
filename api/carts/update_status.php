@@ -33,6 +33,7 @@ if (!isset($data->cart_id) || !isset($data->status)) {
 
 $cart_id = intval($data->cart_id);
 $status = $data->status;
+$notes = isset($data->notes) ? $data->notes : null;
 
 // Valider le statut
 $valid_statuses = ['pending', 'confirmed', 'cancelled'];
@@ -44,6 +45,7 @@ if (!in_array($status, $valid_statuses)) {
 // Connexion à la base de données
 $database = new Database();
 $db = $database->getConnection();
+$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 try {
     // Vérifier si le panier existe
@@ -58,9 +60,10 @@ try {
     }
     
     // Mettre à jour le statut
-    $update_query = "UPDATE carts SET status = :status WHERE id = :cart_id";
+    $update_query = "UPDATE carts SET status = :status , notes = :notes WHERE id = :cart_id";
     $update_stmt = $db->prepare($update_query);
     $update_stmt->bindParam(":status", $status);
+    $update_stmt->bindParam(":notes", $notes);
     $update_stmt->bindParam(":cart_id", $cart_id);
     
     if ($update_stmt->execute()) {
