@@ -30,7 +30,7 @@ $db = $database->getConnection();
 
 try {
     // Préparation de la requête
-    $query = "SELECT * FROM products WHERE user_id = :user_id ORDER BY reference ASC";
+    $query = "SELECT * FROM expenses WHERE user_id = :user_id ORDER BY date DESC, created_at DESC";
     
     $stmt = $db->prepare($query);
     
@@ -40,42 +40,32 @@ try {
     // Exécution de la requête
     $stmt->execute();
     
-    // Vérification si des produits existent
+    // Vérification si des frais existent
     if ($stmt->rowCount() > 0) {
-        // Tableau pour stocker les produits
-        $products_arr = array();
+        // Tableau pour stocker les frais
+        $expenses_arr = array();
         
         // Récupération des résultats
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            // Vérifier si la colonne price existe
-            $price = isset($row['price']) ? floatval($row['price']) : 0.0;
-            
-            // Si le prix est 0, définir un prix par défaut
-            if ($price <= 0) {
-                // Générer un prix par défaut basé sur l'ID
-                $price = 9.99 + ($row['id'] % 10);
-            }
-            
-            $product_item = array(
+            $expense_item = array(
                 "id" => $row['id'],
-                "reference" => $row['reference'],
-                "label" => $row['label'],
-                "name" => $row['name'],
+                "type" => $row['type'],
+                "amount" => floatval($row['amount']),
+                "date" => $row['date'],
                 "description" => $row['description'],
-                "photo_url" => $row['photo_url'],
-                "barcode" => $row['barcode'],
-                "quantity" => $row['quantity'],
-                "price" => $price, // Ajouter le prix
-                "user_id" => $row['user_id']
+                "receipt_photo_url" => $row['receipt_photo_url'],
+                "user_id" => $row['user_id'],
+                "created_at" => $row['created_at'],
+                "updated_at" => $row['updated_at']
             );
             
-            array_push($products_arr, $product_item);
+            array_push($expenses_arr, $expense_item);
         }
         
-        // Réponse avec la liste des produits
-        Response::json($products_arr);
+        // Réponse avec la liste des frais
+        Response::json($expenses_arr);
     } else {
-        // Aucun produit trouvé
+        // Aucun frais trouvé
         Response::json(array());
     }
 } catch (PDOException $e) {
@@ -87,4 +77,4 @@ try {
     error_log("Error: " . $e->getMessage());
     Response::error("Une erreur est survenue", 500);
 }
-?> 
+?>

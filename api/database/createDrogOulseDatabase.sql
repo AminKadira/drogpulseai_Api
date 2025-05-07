@@ -137,6 +137,25 @@ CREATE TABLE IF NOT EXISTS `tracking_stores` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ------------------------------------------------------------------------------------------------
+-- Table pour le suivi des frais 
+-- ------------------------------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `expenses` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` varchar(50) NOT NULL,
+  `amount` decimal(10,2) NOT NULL,
+  `date` date NOT NULL,
+  `description` text,
+  `receipt_photo_url` varchar(255),
+  `user_id` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `expense_user_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------------------------------------------
 -- Index pour optimiser les performances des requêtes
 -- ------------------------------------------------------------------------------------------------
 CREATE INDEX idx_contacts_user_id ON contacts(user_id);
@@ -147,6 +166,10 @@ CREATE INDEX idx_price_path_product ON price_path(product_id);
 CREATE INDEX idx_price_path_date ON price_path(date);
 CREATE INDEX idx_tracking_stores_date ON tracking_stores(date_transaction);
 CREATE INDEX idx_tracking_stores_transaction ON tracking_stores(transaction);
+CREATE INDEX idx_expenses_user_id ON expenses(user_id);
+CREATE INDEX idx_expenses_date ON expenses(date);
+CREATE INDEX idx_expenses_type ON expenses(type);
+
 
 -- ------------------------------------------------------------------------------------------------
 -- Triggers pour l'historique des prix
