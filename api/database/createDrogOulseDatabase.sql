@@ -155,6 +155,29 @@ CREATE TABLE IF NOT EXISTS `expenses` (
   CONSTRAINT `expense_user_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+
+-- ------------------------------------------------------------------------------------------------
+-- Table pour l'historique des frais (sans contrainte de clé étrangère)
+-- ------------------------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `expenses_history` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `expense_id` int(11) NOT NULL COMMENT 'ID de référence, même si le frais original est supprimé',
+  `type` varchar(50) NOT NULL,
+  `amount` decimal(10,2) NOT NULL,
+  `date` date NOT NULL,
+  `description` text,
+  `user_id` int(11) NOT NULL,
+  `action` enum('CREATE','UPDATE','DELETE') NOT NULL,
+  `action_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `notes` text COMMENT 'Informations supplémentaires sur la modification',
+  PRIMARY KEY (`id`),
+  KEY `expense_id` (`expense_id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `expense_history_user_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+  -- Pas de contrainte de clé étrangère pour expense_id
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
 -- ------------------------------------------------------------------------------------------------
 -- Index pour optimiser les performances des requêtes
 -- ------------------------------------------------------------------------------------------------
@@ -169,7 +192,10 @@ CREATE INDEX idx_tracking_stores_transaction ON tracking_stores(transaction);
 CREATE INDEX idx_expenses_user_id ON expenses(user_id);
 CREATE INDEX idx_expenses_date ON expenses(date);
 CREATE INDEX idx_expenses_type ON expenses(type);
-
+CREATE INDEX idx_expenses_history_date ON expenses_history(date);
+CREATE INDEX idx_expenses_history_action_date ON expenses_history(action_date);
+CREATE INDEX idx_expenses_history_type ON expenses_history(type);
+CREATE INDEX idx_expenses_history_action ON expenses_history(action);
 
 -- ------------------------------------------------------------------------------------------------
 -- Triggers pour l'historique des prix
@@ -374,6 +400,101 @@ BEGIN
     END IF;
 END//
 
+DELIMITER ;
+
+-- ------------------------------------------------------------------------------------------------
+-- Triggers pour l'historique des frais
+-- ------------------------------------------------------------------------------------------------
+DELIMITER //
+
+-- Trigger après insertion d'un nouveau frais
+CREATE TRIGGER after_expense_insert
+AFTER INSERT ON expenses
+FOR EACH ROW
+BEGIN
+    INSERT INTO expenses_history (
+        expense_id,
+        type,
+        amount,
+        date,
+        description,
+        user_id,
+        action,
+        notes
+    )
+    VALUES (
+        NEW.id,
+        NEW.type,
+        NEW.amount,
+        NEW.date,
+        NEW.description,
+        NEW.user_id,
+        'CREATE',
+        'Création initiale du frais'
+    );
+END//
+
+-- Trigger après mise à jour d'un frais
+CREATE TRIGGER after_expense_update
+AFTER UPDATE ON expenses
+FOR EACH ROW
+BEGIN
+    INSERT INTO expenses_history (
+        expense_id,
+        type,
+        amount,
+        date,
+        description,
+        user_id,
+        action,
+        notes
+    )
+    VALUES (
+        NEW.id,
+        NEW.type,
+        NEW.amount,
+        NEW.date,
+        NEW.description,
+        NEW.user_id,
+        'UPDATE',
+        CONCAT(
+            'Mise à jour du frais. ',
+            IF(NEW.type <> OLD.type, CONCAT('Type: ', OLD.type, ' -> ', NEW.type, '. '), ''),
+            IF(NEW.amount <> OLD.amount, CONCAT('Montant: ', OLD.amount, ' -> ', NEW.amount, '. '), ''),
+            IF(NEW.date <> OLD.date, CONCAT('Date: ', OLD.date, ' -> ', NEW.date, '. '), ''),
+            IF(NOT (NEW.description <=> OLD.description), 'Description modifiée. ', '')
+        )
+    );
+END//
+
+-- Trigger avant suppression d'un frais (préservant l'historique)
+DELIMITER //
+CREATE TRIGGER before_expense_delete
+BEFORE DELETE ON expenses
+FOR EACH ROW
+BEGIN
+    -- Ajouter une entrée finale dans l'historique pour indiquer la suppression
+    INSERT INTO expenses_history (
+        expense_id,
+        type,
+        amount,
+        date,
+        description,
+        user_id,
+        action,
+        notes
+    )
+    VALUES (
+        OLD.id,
+        OLD.type,
+        OLD.amount,
+        OLD.date,
+        OLD.description,
+        OLD.user_id,
+        'DELETE',
+        'Suppression du frais'
+    );
+END//
 DELIMITER ;
 
 -- ------------------------------------------------------------------------------------------------
