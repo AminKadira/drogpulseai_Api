@@ -66,6 +66,12 @@ CREATE TABLE IF NOT EXISTS `products` (
   FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+
+ALTER TABLE `products` 
+ADD COLUMN `cout_de_revient_unitaire` DECIMAL(10,2) DEFAULT 0.00 COMMENT 'Coût de revient unitaire du produit',
+ADD COLUMN `prix_min_vente` DECIMAL(10,2) DEFAULT 0.00 COMMENT 'Prix minimum de vente du produit',
+ADD COLUMN `prix_vente_conseille` DECIMAL(10,2) DEFAULT 0.00 COMMENT 'Prix de vente conseillé du produit';
+
 -- ------------------------------------------------------------------------------------------------
 -- Table des paniers/commandes
 -- ------------------------------------------------------------------------------------------------
@@ -497,6 +503,88 @@ BEGIN
 END//
 DELIMITER ;
 
+
+-- Créer les triggers pour la table expenses
+DELIMITER //
+
+-- Supprimer les triggers s'ils existent déjà
+DROP TRIGGER IF EXISTS after_expense_insert_recalculate_product_prices //
+DROP TRIGGER IF EXISTS after_expense_update_recalculate_product_prices //
+DROP TRIGGER IF EXISTS after_expense_delete_recalculate_product_prices //
+DROP PROCEDURE IF EXISTS update_product_prices //
+
+-- Procédure de mise à jour des prix basée sur les charges indirectes
+CREATE PROCEDURE update_product_prices()
+BEGIN
+    -- Variables pour le calcul
+    DECLARE taux_marge_souhaite DECIMAL(5,2) DEFAULT 30.00; -- 30% par défaut
+    
+    -- Mise à jour des produits dont la quantité est supérieure à zéro
+    UPDATE products p
+    JOIN (
+        -- Sous-requête pour calculer la quote-part des charges indirectes
+        SELECT 
+            p2.id AS product_id,
+            p2.price AS prix_achat_unitaire,
+            IFNULL(
+                (SELECT SUM(amount) 
+                 FROM expenses 
+                 WHERE created_at >= p2.created_at
+                ), 0
+            ) AS charges_indirectes_mensuelles,
+            p2.quantity AS quantite_vendue_mensuelle,
+            -- Clause de sécurité pour éviter division par zéro
+            IFNULL(
+                (SELECT SUM(amount) 
+                 FROM expenses 
+                 WHERE created_at >= p2.created_at
+                ) / NULLIF(p2.quantity, 0), 
+                0
+            ) AS quote_part_charges_indirectes
+        FROM products p2
+        WHERE p2.quantity > 0
+    ) AS calculations ON p.id = calculations.product_id
+    
+    SET 
+        -- 3. Calcul du coût de revient unitaire (sans cout_transport_unitaire)
+        p.cout_de_revient_unitaire = calculations.prix_achat_unitaire + calculations.quote_part_charges_indirectes,
+        
+        -- 4. Calcul du prix minimum de vente
+        p.prix_min_vente = p.cout_de_revient_unitaire,
+        
+        -- 5. Calcul du prix conseillé avec marge
+        p.prix_vente_conseille = p.cout_de_revient_unitaire / (1 - (taux_marge_souhaite / 100))
+    WHERE p.quantity > 0;
+END //
+
+-- Trigger après insertion d'une nouvelle charge qui recalcule les prix des produits
+CREATE TRIGGER after_expense_insert_recalculate_product_prices
+AFTER INSERT ON expenses
+FOR EACH ROW
+BEGIN
+    -- Appel de la procédure de mise à jour des prix
+    CALL update_product_prices();
+END //
+
+-- Trigger après modification d'une charge qui recalcule les prix des produits
+CREATE TRIGGER after_expense_update_recalculate_product_prices
+AFTER UPDATE ON expenses
+FOR EACH ROW
+BEGIN
+    -- Appel de la procédure de mise à jour des prix
+    CALL update_product_prices();
+END //
+
+-- Trigger après suppression d'une charge qui recalcule les prix des produits
+CREATE TRIGGER after_expense_delete_recalculate_product_prices
+AFTER DELETE ON expenses
+FOR EACH ROW
+BEGIN
+    -- Appel de la procédure de mise à jour des prix
+    CALL update_product_prices();
+END //
+
+DELIMITER ;
 -- ------------------------------------------------------------------------------------------------
 -- Données de démonstration
 -- ------------------------------------------------------------------------------------------------
