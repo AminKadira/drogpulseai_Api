@@ -606,14 +606,38 @@ INSERT INTO `contacts` (`nom`, `prenom`, `telephone`, `email`, `notes`, `latitud
 ('Fassi', 'Yassine', '0601234567', 'yassine.fassi@example.ma', 'Prospect', 34.0331, -5.0000, 1),
 ('Alami', 'Salma', '0612345670', 'salma.alami@example.ma', 'Partenaire logistique', 33.5311, -7.6690, 1);
 
-INSERT INTO `products` (`reference`, `label`, `name`, `description`, `barcode`, `quantity`, `user_id`) VALUES
-('PROD-004', 'Cintreuse hydraulique SWG-3', 'Cintreuse hydraulique 1/2 à 3 - SWG-3', 'Cintreuse hydraulique pour tubes de 1/2 à 3 pouces.', '123456789014', 10, 1),
-('PROD-005', 'Jeu de 9 clés mâles longues', 'Jeu de 9 clés mâles longues 1.5 à 10mm sur râtelier', 'Clés mâles longues en acier, tailles de 1.5 à 10mm.', '123456789015', 25, 1),
-('PROD-006', 'Meuleuse angulaire Bosch GWS 750', 'Meuleuse angulaire Bosch GWS 750 (115)', 'Meuleuse angulaire 750W, disque de 115mm.', '123456789016', 15, 1),
-('PROD-007', 'Scie circulaire Bosch GKS 190', 'Scie circulaire Bosch GKS 190 1400W 184mm', 'Scie circulaire puissante de 1400W avec lame de 184mm.', '123456789017', 8, 1),
-('PROD-008', 'Agrafeuse pneumatique PS111', 'Agrafeuse pneumatique professionnelle PS111 140/6-16mm', 'Agrafeuse pneumatique pour agrafes de 6 à 16mm.', '123456789018', 20, 1),
-('PROD-009', 'Foret étagé HSS M2 4A20 mm', 'Foret étagé HSS M2 4A20 mm marque Tivoly', 'Foret étagé en acier HSS M2, diamètre 4 à 20mm.', '123456789019', 30, 1),
-('PROD-010', 'Coffret de 6 tournevis mixtes', 'Coffret de 6 tournevis mixtes – Stanley', 'Ensemble de 6 tournevis pour usages variés.', '123456789020', 40, 1),
-('PROD-011', 'Boîte à outils aluminium', 'Boîte à outils 41.5x13x36.5 cm en aluminium', 'Boîte à outils en aluminium avec dimensions 41.5x13x36.5 cm.', '123456789021', 12, 1),
-('PROD-012', 'Trousse à outils lourds', 'Trousse à outils lourds 129×26 cm', 'Trousse robuste pour outils lourds, dimensions 129×26 cm.', '123456789022', 18, 1),
-('PROD-013', 'Truelle 180mm', 'Truelle 180mm', 'Truelle de maçonnerie de 180mm.', '123456789023', 50, 1);
+
+INSERT INTO `products` (`reference`, `label`, `name`, `description`, `barcode`, `quantity`, `price`, `user_id`) VALUES
+('PROD-004', 'Cintreuse hydraulique SWG-3', 'Cintreuse hydraulique 1/2 à 3 - SWG-3', 'Cintreuse hydraulique pour tubes de 1/2 à 3 pouces.', '123456789014', 10, 459.99, 8),
+('PROD-005', 'Jeu de 9 clés mâles longues', 'Jeu de 9 clés mâles longues 1.5 à 10mm sur râtelier', 'Clés mâles longues en acier, tailles de 1.5 à 10mm.', '123456789015', 25, 24.99, 8),
+('PROD-006', 'Meuleuse angulaire Bosch GWS 750', 'Meuleuse angulaire Bosch GWS 750 (115)', 'Meuleuse angulaire 750W, disque de 115mm.', '123456789016', 15, 89.99, 8),
+('PROD-007', 'Scie circulaire Bosch GKS 190', 'Scie circulaire Bosch GKS 190 1400W 184mm', 'Scie circulaire puissante de 1400W avec lame de 184mm.', '123456789017', 8, 159.99, 8),
+('PROD-008', 'Agrafeuse pneumatique PS111', 'Agrafeuse pneumatique professionnelle PS111 140/6-16mm', 'Agrafeuse pneumatique pour agrafes de 6 à 16mm.', '123456789018', 20, 79.99, 8),
+('PROD-009', 'Foret étagé HSS M2 4A20 mm', 'Foret étagé HSS M2 4A20 mm marque Tivoly', 'Foret étagé en acier HSS M2, diamètre 4 à 20mm.', '123456789019', 30, 39.99, 8),
+('PROD-010', 'Coffret de 6 tournevis mixtes', 'Coffret de 6 tournevis mixtes – Stanley', 'Ensemble de 6 tournevis pour usages variés.', '123456789020', 40, 29.99, 8),
+('PROD-011', 'Boîte à outils aluminium', 'Boîte à outils 41.5x13x36.5 cm en aluminium', 'Boîte à outils en aluminium avec dimensions 41.5x13x36.5 cm.', '123456789021', 12, 49.99, 8),
+('PROD-012', 'Trousse à outils lourds', 'Trousse à outils lourds 129×26 cm', 'Trousse robuste pour outils lourds, dimensions 129×26 cm.', '123456789022', 18, 59.99, 8),
+('PROD-013', 'Truelle 180mm', 'Truelle 180mm', 'Truelle de maçonnerie de 180mm.', '123456789023', 50, 14.99, 8);
+
+
+
+
+-- Désactiver temporairement le trigger
+DELIMITER //
+DROP TRIGGER IF EXISTS before_product_delete //
+DELIMITER ;
+
+-- Supprimer le produit
+DELETE FROM `products` WHERE `products`.`id` = 63 LIMIT 1;
+
+-- Recréer le trigger
+DELIMITER //
+CREATE TRIGGER before_product_delete
+BEFORE DELETE ON products
+FOR EACH ROW
+BEGIN
+    -- Ajouter une entrée finale indiquant que le produit a été supprimé
+    INSERT INTO price_path (product_id, price, date, remarque)
+    VALUES (OLD.id, OLD.price, CURDATE(), 'Dernier prix avant suppression du produit');
+END//
+DELIMITER ;

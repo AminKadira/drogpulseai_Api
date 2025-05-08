@@ -47,15 +47,6 @@ try {
         
         // Récupération des résultats
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            // Vérifier si la colonne price existe
-            $price = isset($row['price']) ? floatval($row['price']) : 0.0;
-            
-            // Si le prix est 0, définir un prix par défaut
-            if ($price <= 0) {
-                // Générer un prix par défaut basé sur l'ID
-                $price = 9.99 + ($row['id'] % 10);
-            }
-            
             $product_item = array(
                 "id" => $row['id'],
                 "reference" => $row['reference'],
@@ -65,7 +56,9 @@ try {
                 "photo_url" => $row['photo_url'],
                 "barcode" => $row['barcode'],
                 "quantity" => $row['quantity'],
-                "price" => $price, // Ajouter le prix
+                "price" => $row['price'],
+                "prix_min_vente" => $row['prix_min_vente'],
+                "prix_vente_conseille" => $row['prix_vente_conseille'],
                 "user_id" => $row['user_id']
             );
             
@@ -87,4 +80,4 @@ try {
     error_log("Error: " . $e->getMessage());
     Response::error("Une erreur est survenue", 500);
 }
-?> 
+?>
