@@ -575,6 +575,36 @@ BEGIN
     CALL update_product_prices();
 END //
 
+DELIMITER //
+
+-- Supprimer les triggers s'ils existent déjà
+DROP TRIGGER IF EXISTS after_product_insert_recalculate_product_prices //
+DROP TRIGGER IF EXISTS after_product_update_recalculate_product_prices //
+
+-- Trigger après insertion d'un produit qui recalcule les prix
+CREATE TRIGGER after_product_insert_recalculate_product_prices
+AFTER INSERT ON products
+FOR EACH ROW
+BEGIN
+    -- Ne recalcule que si la quantité du nouveau produit est supérieure à 0
+    IF NEW.quantity > 0 THEN
+        CALL update_product_prices();
+    END IF;
+END //
+
+-- Trigger après modification d'un produit qui recalcule les prix
+CREATE TRIGGER after_product_update_recalculate_product_prices
+AFTER UPDATE ON products
+FOR EACH ROW
+BEGIN
+    -- Ne recalcule que si la quantité a changé ou si le prix a changé
+    IF NEW.quantity != OLD.quantity OR NEW.price != OLD.price THEN
+        CALL update_product_prices();
+    END IF;
+END //
+
+DELIMITER ;
+
 -- Trigger après suppression d'une charge qui recalcule les prix des produits
 CREATE TRIGGER after_expense_delete_recalculate_product_prices
 AFTER DELETE ON expenses
