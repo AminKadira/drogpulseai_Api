@@ -72,6 +72,9 @@ ADD COLUMN `cout_de_revient_unitaire` DECIMAL(10,2) DEFAULT 0.00 COMMENT 'Coût 
 ADD COLUMN `prix_min_vente` DECIMAL(10,2) DEFAULT 0.00 COMMENT 'Prix minimum de vente du produit',
 ADD COLUMN `prix_vente_conseille` DECIMAL(10,2) DEFAULT 0.00 COMMENT 'Prix de vente conseillé du produit';
 
+ALTER TABLE products 
+ADD COLUMN photo_url2 VARCHAR(255) DEFAULT NULL AFTER photo_url,
+ADD COLUMN photo_url3 VARCHAR(255) DEFAULT NULL AFTER photo_url2;
 -- ------------------------------------------------------------------------------------------------
 -- Table des paniers/commandes
 -- ------------------------------------------------------------------------------------------------

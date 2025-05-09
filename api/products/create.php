@@ -1,5 +1,4 @@
 <?php
-
 // Désactiver tous les affichages d'erreur qui contamineraient le JSON
 ini_set('display_errors', 0);
 
@@ -37,6 +36,8 @@ if (empty($data) || !is_object($data)) {
     $data->name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
     $data->description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);
     $data->photo_url = filter_input(INPUT_POST, 'photo_url', FILTER_SANITIZE_STRING);
+    $data->photo_url2 = filter_input(INPUT_POST, 'photo_url2', FILTER_SANITIZE_STRING);
+    $data->photo_url3 = filter_input(INPUT_POST, 'photo_url3', FILTER_SANITIZE_STRING);
     $data->barcode = filter_input(INPUT_POST, 'barcode', FILTER_SANITIZE_STRING);
     $data->quantity = filter_input(INPUT_POST, 'quantity', FILTER_SANITIZE_NUMBER_INT);
     $data->price = filter_input(INPUT_POST, 'price', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
@@ -106,9 +107,9 @@ try {
     }
     
     // Préparation de la requête d'insertion
-    $query = "INSERT INTO products (reference, label, name, description, photo_url, 
+    $query = "INSERT INTO products (reference, label, name, description, photo_url, photo_url2, photo_url3, 
                                    barcode, quantity, price, user_id)
-              VALUES (:reference, :label, :name, :description, :photo_url, 
+              VALUES (:reference, :label, :name, :description, :photo_url, :photo_url2, :photo_url3, 
                      :barcode, :quantity, :price, :user_id)";
    
     $stmt = $db->prepare($query);
@@ -119,6 +120,8 @@ try {
     $name = htmlspecialchars(strip_tags($data->name));
     $description = !empty($data->description) ? htmlspecialchars(strip_tags($data->description)) : null;
     $photo_url = !empty($data->photo_url) ? htmlspecialchars(strip_tags($data->photo_url)) : null;
+    $photo_url2 = !empty($data->photo_url2) ? htmlspecialchars(strip_tags($data->photo_url2)) : null;
+    $photo_url3 = !empty($data->photo_url3) ? htmlspecialchars(strip_tags($data->photo_url3)) : null;
     $barcode = !empty($data->barcode) ? htmlspecialchars(strip_tags($data->barcode)) : null;
     $quantity = !empty($data->quantity) ? intval($data->quantity) : 0;
     $price = !empty($data->price) ? floatval($data->price) : 0.00;
@@ -129,6 +132,8 @@ try {
     $stmt->bindParam(":name", $name);
     $stmt->bindParam(":description", $description);
     $stmt->bindParam(":photo_url", $photo_url);
+    $stmt->bindParam(":photo_url2", $photo_url2);
+    $stmt->bindParam(":photo_url3", $photo_url3);
     $stmt->bindParam(":barcode", $barcode);
     $stmt->bindParam(":quantity", $quantity);
     $stmt->bindParam(":price", $price);
@@ -139,7 +144,7 @@ try {
         $product_id = $db->lastInsertId();
         
         // Récupérer le produit créé pour confirmation
-        $product_query = "SELECT id, reference, label, name, description, photo_url, 
+        $product_query = "SELECT id, reference, label, name, description, photo_url, photo_url2, photo_url3, 
                           barcode, quantity, price, user_id
                           FROM products WHERE id = :id";
         $product_stmt = $db->prepare($product_query);
@@ -152,8 +157,8 @@ try {
         Response::error("Impossible de créer le produit", 500);
     }
 } catch (PDOException $e) {
-    Response::error("Erreur de base de données", 500);
+    Response::error("Erreur de base de données: " . $e->getMessage(), 500);
 } catch (Exception $e) {
-    Response::error("Une erreur est survenue", 500);
+    Response::error("Une erreur est survenue: " . $e->getMessage(), 500);
 }
 ?>

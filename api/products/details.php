@@ -53,6 +53,8 @@ try {
             "name" => $row['name'],
             "description" => $row['description'],
             "photo_url" => $row['photo_url'],
+            "photo_url2" => $row['photo_url2'],
+            "photo_url3" => $row['photo_url3'],
             "barcode" => $row['barcode'],
             "quantity" => $row['quantity'],
             "price" => $row['price'],

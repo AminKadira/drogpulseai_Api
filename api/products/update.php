@@ -34,6 +34,8 @@ if (empty($data) || !is_object($data)) {
     $data->name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
     $data->description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);
     $data->photo_url = filter_input(INPUT_POST, 'photo_url', FILTER_SANITIZE_STRING);
+    $data->photo_url2 = filter_input(INPUT_POST, 'photo_url2', FILTER_SANITIZE_STRING);
+    $data->photo_url3 = filter_input(INPUT_POST, 'photo_url3', FILTER_SANITIZE_STRING);
     $data->barcode = filter_input(INPUT_POST, 'barcode', FILTER_SANITIZE_STRING);
     $data->quantity = filter_input(INPUT_POST, 'quantity', FILTER_SANITIZE_NUMBER_INT);
     $data->price = filter_input(INPUT_POST, 'price', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
@@ -117,7 +119,9 @@ try {
                   label = :label, 
                   name = :name, 
                   description = :description, 
-                  photo_url = :photo_url, 
+                  photo_url = :photo_url,
+                  photo_url2 = :photo_url2,
+                  photo_url3 = :photo_url3,
                   barcode = :barcode, 
                   quantity = :quantity,
                   price = :price,
@@ -132,6 +136,8 @@ try {
     $name = htmlspecialchars(strip_tags($data->name));
     $description = !empty($data->description) ? htmlspecialchars(strip_tags($data->description)) : null;
     $photo_url = !empty($data->photo_url) ? htmlspecialchars(strip_tags($data->photo_url)) : null;
+    $photo_url2 = !empty($data->photo_url2) ? htmlspecialchars(strip_tags($data->photo_url2)) : null;
+    $photo_url3 = !empty($data->photo_url3) ? htmlspecialchars(strip_tags($data->photo_url3)) : null;
     $barcode = !empty($data->barcode) ? htmlspecialchars(strip_tags($data->barcode)) : null;
     $quantity = !empty($data->quantity) ? intval($data->quantity) : 0;
     $price = !empty($data->price) ? floatval($data->price) : 0.00;
@@ -143,6 +149,8 @@ try {
     $stmt->bindParam(":name", $name);
     $stmt->bindParam(":description", $description);
     $stmt->bindParam(":photo_url", $photo_url);
+    $stmt->bindParam(":photo_url2", $photo_url2);
+    $stmt->bindParam(":photo_url3", $photo_url3);
     $stmt->bindParam(":barcode", $barcode);
     $stmt->bindParam(":quantity", $quantity);
     $stmt->bindParam(":price", $price);
@@ -151,7 +159,7 @@ try {
     // Exécution de la requête
     if ($stmt->execute()) {
         // Récupérer le produit mis à jour pour confirmation
-        $get_query = "SELECT id, reference, label, name, description, photo_url, 
+        $get_query = "SELECT id, reference, label, name, description, photo_url, photo_url2, photo_url3, 
                       barcode, quantity, price, user_id, created_at, updated_at
                       FROM products WHERE id = :id";
         $get_stmt = $db->prepare($get_query);

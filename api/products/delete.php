@@ -56,18 +56,22 @@ try {
     */
     
     // Supprimer d'abord les fichiers associés (photos) si nécessaire
-    $photo_query = "SELECT photo_url FROM products WHERE id = :id";
+    $photo_query = "SELECT photo_url, photo_url2, photo_url3 FROM products WHERE id = :id";
     $photo_stmt = $db->prepare($photo_query);
     $photo_stmt->bindParam(":id", $id);
     $photo_stmt->execute();
     
     if ($photo_stmt->rowCount() > 0) {
         $row = $photo_stmt->fetch(PDO::FETCH_ASSOC);
-        $photo_url = $row['photo_url'];
+    
+        // Traiter chaque URL de photo
+        $photo_urls = [$row['photo_url'], $row['photo_url2'], $row['photo_url3']];
         
-        // Si une photo existe, on peut la supprimer du serveur
-        if (!empty($photo_url) && file_exists("../" . $photo_url)) {
-            unlink("../" . $photo_url);
+        foreach ($photo_urls as $photo_url) {
+            // Si une photo existe, on peut la supprimer du serveur
+            if (!empty($photo_url) && file_exists("../" . $photo_url)) {
+                unlink("../" . $photo_url);
+            }
         }
     }
     
