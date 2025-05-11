@@ -111,7 +111,11 @@ CREATE TABLE IF NOT EXISTS `carts` (
   CONSTRAINT `cart_contact_fk` FOREIGN KEY (`contact_id`) REFERENCES `contacts` (`id`) ON DELETE CASCADE,
   CONSTRAINT `cart_user_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
+ALTER TABLE product_suppliers
+ADD COLUMN notes TEXT DEFAULT NULL,
+ADD COLUMN delivery_conditions TEXT DEFAULT NULL,
+ADD COLUMN delivery_time INT DEFAULT NULL COMMENT 'Délai de livraison en jours',
+ADD COLUMN is_active TINYINT(1) DEFAULT 1;
 -- ------------------------------------------------------------------------------------------------
 -- Table des éléments de panier
 -- ------------------------------------------------------------------------------------------------
