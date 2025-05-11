@@ -49,9 +49,12 @@ try {
             "nom" => $row['nom'],
             "prenom" => $row['prenom'],
             "telephone" => $row['telephone'],
+            "email" => $row['email'],
+            "type" => $row['type'], // Ajout du nouveau champ
+            "notes" => $row['notes'],
             "latitude" => $row['latitude'],
             "longitude" => $row['longitude'],
-            "userId" => $row['user_id']
+            "user_id" => $row['user_id']
         );
         
         // Réponse avec les détails du contact

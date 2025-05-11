@@ -50,6 +50,9 @@ try {
                 "nom" => $row['nom'],
                 "prenom" => $row['prenom'],
                 "telephone" => $row['telephone'],
+                "email" => $row['email'],
+                "type" => $row['type'], // Ajout du nouveau champ
+                "notes" => $row['notes'],
                 "latitude" => $row['latitude'],
                 "longitude" => $row['longitude'],
                 "user_id" => $row['user_id']

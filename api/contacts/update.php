@@ -48,11 +48,18 @@ if (empty($data) || !is_object($data)) {
 
 $missingFields = [];
 if (empty($data->nom)) $missingFields[] = "nom";
-if (empty($data->prenom)) $missingFields[] = "prenom";
+//if (empty($data->prenom)) $missingFields[] = "prenom";
 if (empty($data->telephone)) $missingFields[] = "telephone";
 if (empty($data->latitude)) $missingFields[] = "latitude";
 if (empty($data->longitude)) $missingFields[] = "longitude";
 
+// Vérifier que le type est valide
+$valid_types = ['Fournisseur', 'Vendeur', 'Distributeur', 'Autre'];
+if (!empty($data->type) && in_array($data->type, $valid_types)) {
+    $type = $data->type;
+} else {
+    $type = 'Autre'; // Valeur par défaut
+}
 
 // Vérifier plusieurs variations possibles du champ userId
 $hasUserId = false;
@@ -121,10 +128,10 @@ try {
     
     // Préparation de la requête de mise à jour
     $query = "UPDATE contacts
-              SET nom = :nom, prenom = :prenom, telephone = :telephone,
-                  email = :email, notes = :notes, latitude = :latitude, longitude = :longitude,
-                  updated_at = NOW()
-              WHERE id = :id AND user_id = :user_id";
+    SET nom = :nom, prenom = :prenom, telephone = :telephone,
+        email = :email, notes = :notes, type = :type, latitude = :latitude, longitude = :longitude,
+        updated_at = NOW()
+    WHERE id = :id AND user_id = :user_id";
     
     $stmt = $db->prepare($query);
     
@@ -145,7 +152,8 @@ try {
     $stmt->bindParam(":latitude", $latitude);
     $stmt->bindParam(":longitude", $longitude);
     $stmt->bindParam(":user_id", $user_id);
-    
+    $stmt->bindParam(":type", $type);
+
     // Exécution de la requête
     if ($stmt->execute()) {
         // Récupérer le contact mis à jour pour confirmation

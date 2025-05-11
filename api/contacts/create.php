@@ -42,10 +42,21 @@ if (empty($data) || !is_object($data)) {
 
 $missingFields = [];
 if (empty($data->nom)) $missingFields[] = "nom";
-if (empty($data->prenom)) $missingFields[] = "prenom";
+//if (empty($data->prenom)) $missingFields[] = "prenom";
 if (empty($data->telephone)) $missingFields[] = "telephone";
 if (empty($data->latitude)) $missingFields[] = "latitude";
 if (empty($data->longitude)) $missingFields[] = "longitude";
+
+// Compléter la structure de données pour inclure le type
+if (empty($data->type)) {
+    $data->type = 'Vendeur'; // Valeur par défaut
+} else {
+    // Vérifier que le type est valide
+    $valid_types = ['Fournisseur', 'Vendeur', 'Distributeur', 'Autre'];
+    if (!in_array($data->type, $valid_types)) {
+        $data->type = 'Vendeur'; // Si non valide, utiliser la valeur par défaut
+    }
+}
 
 // Vérifier plusieurs variations possibles du champ userId
 $hasUserId = false;
@@ -93,8 +104,9 @@ try {
     }
     
     // Préparation de la requête d'insertion
-    $query = "INSERT INTO contacts (nom, prenom, telephone, email, notes, latitude, longitude, user_id, created_at)
-              VALUES (:nom, :prenom, :telephone, :email, :notes, :latitude, :longitude, :user_id, NOW())";
+    $query = "INSERT INTO contacts (nom, prenom, telephone, email, notes, type, latitude, longitude, user_id, created_at)
+    VALUES (:nom, :prenom, :telephone, :email, :notes, :type, :latitude, :longitude, :user_id, NOW())";
+
    
     $stmt = $db->prepare($query);
    
@@ -128,7 +140,8 @@ try {
     $stmt->bindParam(":latitude", $latitude);
     $stmt->bindParam(":longitude", $longitude);
     $stmt->bindParam(":user_id", $user_id);
-   
+    $stmt->bindParam(":type", $data->type);
+
     // Exécution de la requête
     if ($stmt->execute()) {
         $contact_id = $db->lastInsertId();
