@@ -75,6 +75,28 @@ ADD COLUMN `prix_vente_conseille` DECIMAL(10,2) DEFAULT 0.00 COMMENT 'Prix de ve
 ALTER TABLE products 
 ADD COLUMN photo_url2 VARCHAR(255) DEFAULT NULL AFTER photo_url,
 ADD COLUMN photo_url3 VARCHAR(255) DEFAULT NULL AFTER photo_url2;
+
+
+-- ------------------------------------------------------------------------------------------------
+-- Table des fournisseur par produit
+-- ------------------------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `product_suppliers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) NOT NULL,
+  `contact_id` int(11) NOT NULL,
+  `notes` text,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `product_contact_unique` (`product_id`, `contact_id`),
+  FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`contact_id`) REFERENCES `contacts` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Ajouter le champ prix à la table existante
+ALTER TABLE `product_suppliers` 
+ADD COLUMN `prix` DECIMAL(10,2) DEFAULT NULL COMMENT 'Prix du produit chez ce fournisseur';
+
 -- ------------------------------------------------------------------------------------------------
 -- Table des paniers/commandes
 -- ------------------------------------------------------------------------------------------------
