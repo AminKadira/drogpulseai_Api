@@ -84,18 +84,15 @@ CREATE TABLE IF NOT EXISTS `product_suppliers` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `product_id` int(11) NOT NULL,
   `contact_id` int(11) NOT NULL,
-  `notes` text,
+  `is_primary` tinyint(1) DEFAULT 0,
+  `price` DECIMAL(10,2) DEFAULT 0.00,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `product_contact_unique` (`product_id`, `contact_id`),
+  UNIQUE KEY `product_supplier_unique` (`product_id`, `contact_id`),
   FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
   FOREIGN KEY (`contact_id`) REFERENCES `contacts` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Ajouter le champ prix à la table existante
-ALTER TABLE `product_suppliers` 
-ADD COLUMN `prix` DECIMAL(10,2) DEFAULT NULL COMMENT 'Prix du produit chez ce fournisseur';
 
 -- ------------------------------------------------------------------------------------------------
 -- Table des paniers/commandes
