@@ -46,7 +46,7 @@ if (empty($data) || !is_object($data)) {
 
 // Vérification des données requises avec détail des champs manquants
 $missingFields = [];
-if (empty($data->reference)) $missingFields[] = "reference";
+//if (empty($data->reference)) $missingFields[] = "reference";
 // if (empty($data->label)) $missingFields[] = "label";
 // if (empty($data->name)) $missingFields[] = "name";
 // Vérifier plusieurs variations possibles du champ userId
