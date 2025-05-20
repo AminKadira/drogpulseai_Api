@@ -29,14 +29,14 @@ $database = new Database();
 $db = $database->getConnection();
 
 try {
-    // Récupérer les informations du panier
+    // Récupérer les informations du panier - Modifié avec LEFT JOIN et IFNULL pour les champs de contact
     $cart_query = "SELECT c.*, 
-                  co.nom as contact_nom, 
-                  co.prenom as contact_prenom,
-                  co.telephone as contact_telephone,
-                  co.email as contact_email
+                  IFNULL(co.nom, '') as contact_nom, 
+                  IFNULL(co.prenom, '') as contact_prenom,
+                  IFNULL(co.telephone, '') as contact_telephone,
+                  IFNULL(co.email, '') as contact_email
                 FROM carts c
-                JOIN contacts co ON c.contact_id = co.id
+                LEFT JOIN contacts co ON c.contact_id = co.id
                 WHERE c.id = :cart_id";
     
     $cart_stmt = $db->prepare($cart_query);
@@ -76,6 +76,9 @@ try {
     // Ajouter les totaux
     $cart['total_quantity'] = $total_quantity;
     $cart['total_amount'] = $total_amount;
+    
+    // Ajouter un indicateur pour signaler si le panier a un contact associé
+    $cart['has_contact'] = !empty($cart['contact_id']);
     
     // Réponse de succès
     Response::success(['cart' => $cart]);

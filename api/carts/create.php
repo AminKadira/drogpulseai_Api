@@ -25,9 +25,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // Récupération des données soumises
 $data = json_decode(file_get_contents("php://input"));
 
-// Vérification des données requises
-if (!isset($data->contact_id) || !isset($data->user_id) || !isset($data->items) || !is_array($data->items)) {
-    Response::error("Données incomplètes. ID du contact, ID de l'utilisateur et articles sont requis.");
+// Vérification des données requises - contact_id est maintenant optionnel
+if (!isset($data->user_id) || !isset($data->items) || !is_array($data->items)) {
+    Response::error("Données incomplètes. ID de l'utilisateur et articles sont requis.");
     exit;
 }
 
@@ -39,32 +39,41 @@ try {
     // Commencer une transaction
     $db->beginTransaction();
     
-    // Vérifier si le contact existe
-    $contact_check = "SELECT COUNT(*) FROM contacts WHERE id = :contact_id AND user_id = :user_id";
-    $stmt = $db->prepare($contact_check);
-    $stmt->bindParam(":contact_id", $data->contact_id);
-    $stmt->bindParam(":user_id", $data->user_id);
-    $stmt->execute();
-    
-    if ($stmt->fetchColumn() == 0) {
-        // Annuler la transaction
-        $db->rollBack();
-        Response::error("Contact invalide ou non autorisé", 404);
-        exit;
+    // Vérifier si le contact existe (seulement si contact_id est fourni)
+    $contact_id = null;
+    if (isset($data->contact_id) && !empty($data->contact_id)) {
+        $contact_id = intval($data->contact_id);
+        $contact_check = "SELECT COUNT(*) FROM contacts WHERE id = :contact_id AND user_id = :user_id";
+        $stmt = $db->prepare($contact_check);
+        $stmt->bindParam(":contact_id", $contact_id);
+        $stmt->bindParam(":user_id", $data->user_id);
+        $stmt->execute();
+        
+        if ($stmt->fetchColumn() == 0) {
+            // Annuler la transaction
+            $db->rollBack();
+            Response::error("Contact invalide ou non autorisé", 404);
+            exit;
+        }
     }
     
-    // Insérer le panier
-    $query = "INSERT INTO carts (contact_id, user_id, notes, status) VALUES (:contact_id, :user_id, :notes, :status)";
+    // Insérer le panier - ajusté pour gérer contact_id optionnel
+    if ($contact_id !== null) {
+        $query = "INSERT INTO carts (contact_id, user_id, notes, status) VALUES (:contact_id, :user_id, :notes, :status)";
+    } else {
+        $query = "INSERT INTO carts (user_id, notes, status) VALUES (:user_id, :notes, :status)";
+    }
     
     $stmt = $db->prepare($query);
     
     // Liaison des paramètres
-    $contact_id = intval($data->contact_id);
     $user_id = intval($data->user_id);
     $notes = isset($data->notes) ? $data->notes : null;
     $status = 'pending';
     
-    $stmt->bindParam(":contact_id", $contact_id);
+    if ($contact_id !== null) {
+        $stmt->bindParam(":contact_id", $contact_id);
+    }
     $stmt->bindParam(":user_id", $user_id);
     $stmt->bindParam(":notes", $notes);
     $stmt->bindParam(":status", $status);
@@ -155,15 +164,15 @@ try {
  * Récupère un panier avec tous ses articles
  */
 function getCartWithItems($db, $cart_id) {
-    // Récupérer les informations du panier
+    // Récupérer les informations du panier - Requête modifiée pour gérer les paniers sans contact
     $cart_query = "SELECT c.*, 
-                    co.nom as contact_nom, 
-                    co.prenom as contact_prenom,
-                    co.telephone as contact_telephone,
-                    co.email as contact_email
-                  FROM carts c
-                  JOIN contacts co ON c.contact_id = co.id
-                  WHERE c.id = :cart_id";
+                   IFNULL(co.nom, '') as contact_nom, 
+                   IFNULL(co.prenom, '') as contact_prenom,
+                   IFNULL(co.telephone, '') as contact_telephone,
+                   IFNULL(co.email, '') as contact_email
+                   FROM carts c
+                   LEFT JOIN contacts co ON c.contact_id = co.id
+                   WHERE c.id = :cart_id";
     
     $cart_stmt = $db->prepare($cart_query);
     $cart_stmt->bindParam(":cart_id", $cart_id);
