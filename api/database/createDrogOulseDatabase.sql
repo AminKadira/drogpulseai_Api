@@ -27,6 +27,12 @@ CREATE TABLE IF NOT EXISTS `users` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Ajouter la colonne Type_User avec une valeur par défaut
+ALTER TABLE `users` 
+ADD COLUMN `type_user` ENUM('Admin', 'Commercial', 'Vendeur', 'Invité', 'Manager') 
+NOT NULL DEFAULT 'Commercial' 
+AFTER `email`;
+
 -- ------------------------------------------------------------------------------------------------
 -- Table des contacts
 -- ------------------------------------------------------------------------------------------------

@@ -15,11 +15,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 // Inclure les fichiers de configuration et d'utilitaires
 require_once '../config/database.php';
 require_once '../utils/response.php';
-// Gestion des requêtes OPTIONS (pre-flight pour CORS)
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit;
-}
 
 // Vérification de la méthode de requête
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -65,8 +60,8 @@ try {
         throw new Exception("Erreur de connexion à la base de données");
     }
 
-    // Préparation de la requête
-    $query = "SELECT id, nom, prenom, telephone, latitude, longitude, email, password
+    // Préparation de la requête - AJOUT du champ type_user
+    $query = "SELECT id, nom, prenom, telephone, latitude, longitude, email, type_user, password
               FROM users
               WHERE email = :email
               LIMIT 1";
@@ -93,13 +88,14 @@ try {
                 'telephone' => htmlspecialchars($row['telephone']),
                 'latitude' => (float)$row['latitude'],
                 'longitude' => (float)$row['longitude'],
-                'email' => $row['email']
+                'email' => $row['email'],
+                'typeUser' => $row['type_user'] // AJOUT du type d'utilisateur
             ];
             
-            // Journaliser la connexion réussie (optionnel)
-            // writeLog('login', 'Connexion réussie pour: ' . $data->email);
+            // Journaliser la connexion réussie avec le type d'utilisateur
+            error_log('Connexion réussie pour: ' . $data->email . ' (Type: ' . $row['type_user'] . ')');
             
-            // Réponse de succès avec les données utilisateur
+            // Réponse de succès avec les données utilisateur incluant le type
             Response::success(['user' => $user], "Connexion réussie");
         } else {
             // Mot de passe incorrect - utiliser un message générique pour la sécurité
@@ -111,11 +107,11 @@ try {
     }
 } catch (PDOException $e) {
     // Journaliser l'erreur en interne mais ne pas exposer les détails techniques
-    // writeLog('error', 'PDO Error: ' . $e->getMessage());
+    error_log('PDO Error: ' . $e->getMessage());
     Response::error("Erreur de connexion à la base de données", 500);
 } catch (Exception $e) {
     // Journaliser l'erreur en interne mais ne pas exposer les détails techniques
-    // writeLog('error', 'Error: ' . $e->getMessage());
+    error_log('Error: ' . $e->getMessage());
     Response::error("Une erreur est survenue", 500);
 }
 ?>
