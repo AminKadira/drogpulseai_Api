@@ -216,6 +216,7 @@ CREATE TABLE IF NOT EXISTS `expenses_history` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
+
 -- ------------------------------------------------------------------------------------------------
 -- Index pour optimiser les performances des requêtes
 -- ------------------------------------------------------------------------------------------------
@@ -699,3 +700,255 @@ BEGIN
     VALUES (OLD.id, OLD.price, CURDATE(), 'Dernier prix avant suppression du produit');
 END//
 DELIMITER ;
+
+BEGIN
+    -- Déclarations des variables
+    DECLARE done INT DEFAULT FALSE;
+    DECLARE current_user_id INT;
+    DECLARE nb_produits INT;
+    DECLARE valeur_totale DECIMAL(15,2);
+    DECLARE charges_totales DECIMAL(15,2);
+    DECLARE first_product_id INT;
+    
+    -- Déclaration du curseur
+    DECLARE user_cursor CURSOR FOR 
+        SELECT DISTINCT user_id 
+        FROM products 
+        ORDER BY user_id;
+    
+    -- Déclaration du handler
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+    
+    -- Variables de session
+    SET @quantite_fixe = 100;
+    SET @taux_marge = 5.00;
+    SET @plafond_charges_pct = 200.00;
+    SET @days_lookback = 30;
+    
+    -- Ouvrir le curseur
+    OPEN user_cursor;
+    
+    -- Parcourir tous les utilisateurs
+    user_loop: LOOP
+        FETCH user_cursor INTO current_user_id;
+        
+        IF done THEN
+            LEAVE user_loop;
+        END IF;
+        
+        -- Trouver d'abord un produit valide pour cet utilisateur (pour les logs)
+        SELECT MIN(id) INTO first_product_id 
+        FROM products 
+        WHERE user_id = current_user_id
+        LIMIT 1;
+        
+        -- Vérifier si l'utilisateur a des produits
+        IF first_product_id IS NOT NULL THEN
+            -- Calcul des totaux pour cet utilisateur
+            SELECT 
+                COUNT(*) AS nombre_produits,
+                COALESCE(SUM(price * @quantite_fixe), 0) AS valeur_totale_catalogue,
+                (SELECT COALESCE(SUM(amount), 0) 
+                 FROM expenses 
+                 WHERE user_id = current_user_id 
+                 AND date >= DATE_SUB(CURDATE(), INTERVAL @days_lookback DAY)) AS charges_totales
+            INTO nb_produits, valeur_totale, charges_totales
+            FROM products 
+            WHERE user_id = current_user_id;
+            
+            -- Log des informations de calcul (avec product_id valide)
+            INSERT INTO tracking_stores (
+                product_id, last_quantity, transaction, date_transaction, user_id, remarque
+            ) VALUES (
+                first_product_id, 0, 0, NOW(), current_user_id, 
+                CONCAT('Calcul pour User ID: ', current_user_id, 
+                       ' - Produits: ', nb_produits,
+                       ', Valeur totale: ', valeur_totale,
+                       ', Charges: ', charges_totales)
+            );
+            
+            IF valeur_totale > 0 AND nb_produits > 0 THEN
+                UPDATE products p
+                SET 
+                    p.cout_de_revient_unitaire = p.price + 
+                        LEAST(
+                            @plafond_charges_pct/100 * p.price,
+                            ((0.5 * (charges_totales * ((p.price * @quantite_fixe) / valeur_totale))) +
+                             (0.5 * (charges_totales / nb_produits))) / @quantite_fixe
+                        ),
+                    
+                    p.prix_min_vente = p.price + 
+                        LEAST(
+                            @plafond_charges_pct/100 * p.price,
+                            ((0.5 * (charges_totales * ((p.price * @quantite_fixe) / valeur_totale))) +
+                             (0.5 * (charges_totales / nb_produits))) / @quantite_fixe
+                        ),
+                    
+                    p.prix_vente_conseille = (p.price + 
+                        LEAST(
+                            @plafond_charges_pct/100 * p.price,
+                            ((0.5 * (charges_totales * ((p.price * @quantite_fixe) / valeur_totale))) +
+                             (0.5 * (charges_totales / nb_produits))) / @quantite_fixe
+                        )) / (1 - (@taux_marge / 100)),
+                        
+                    p.updated_at = NOW()
+                WHERE p.user_id = current_user_id;
+                
+                -- Utilisation de DELETE + INSERT pour l'historique des prix
+                DELETE FROM price_path 
+                WHERE date = CURDATE() 
+                AND product_id IN (SELECT id FROM products WHERE user_id = current_user_id);
+                
+                INSERT INTO price_path (product_id, price, date, remarque)
+                SELECT 
+                    id, 
+                    prix_vente_conseille, 
+                    CURDATE(), 
+                    CONCAT('Calcul automatique - User: ', current_user_id, ', Qté: ', @quantite_fixe)
+                FROM products 
+                WHERE user_id = current_user_id;
+                
+                -- Log des résultats
+                INSERT INTO tracking_stores (
+                    product_id, last_quantity, transaction, date_transaction, user_id, remarque
+                ) VALUES (
+                    first_product_id, 0, 0, NOW(), current_user_id, 
+                    CONCAT('Mise à jour réussie - Charges réparties: ', charges_totales, ' MAD')
+                );
+            END IF;
+        END IF;
+    END LOOP;
+    
+    CLOSE user_cursor;
+END
+
+
+
+-- ------------------------------------------------------------------------------------------------
+-- Table des groupes
+-- ------------------------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `groupes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_user` int(11) NOT NULL COMMENT 'ID de l\'administrateur du groupe',
+  `name` varchar(100) NOT NULL,
+  `description` text NULL,
+  `date_creation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `date_modification` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `date_validite` date NULL COMMENT 'Date de fin de validité du groupe (NULL = illimité)',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `groupe_name_unique` (`name`),
+  KEY `idx_groupe_admin` (`id_user`),
+  KEY `idx_groupe_name` (`name`),
+  KEY `idx_groupe_date_creation` (`date_creation`),
+  KEY `idx_groupe_date_validite` (`date_validite`),
+  KEY `idx_groupe_admin_name` (`id_user`, `name`),
+  CONSTRAINT `groupe_admin_fk` FOREIGN KEY (`id_user`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+COMMENT='Table des groupes avec administrateur';
+
+-- ------------------------------------------------------------------------------------------------
+-- Table des membres de groupes (relation many-to-many)
+-- ------------------------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `groupe_membres` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_groupe` int(11) NOT NULL,
+  `id_user` int(11) NOT NULL,
+  `date_ajout` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `date_modification` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `ajoute_par` int(11) NOT NULL COMMENT 'ID de l\'utilisateur qui a ajouté ce membre',
+  `is_active` tinyint(1) NOT NULL DEFAULT 1 COMMENT '1=actif, 0=inactif',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `groupe_user_unique` (`id_groupe`, `id_user`),
+  KEY `idx_membre_groupe` (`id_groupe`),
+  KEY `idx_membre_user` (`id_user`),
+  KEY `idx_membre_ajoute_par` (`ajoute_par`),
+  KEY `idx_membre_date_ajout` (`date_ajout`),
+  KEY `idx_membre_is_active` (`is_active`),
+  KEY `idx_membre_groupe_active` (`id_groupe`, `is_active`),
+  KEY `idx_membre_user_active` (`id_user`, `is_active`),
+  KEY `idx_membre_groupe_user_active` (`id_groupe`, `id_user`, `is_active`),
+  CONSTRAINT `membre_groupe_fk` FOREIGN KEY (`id_groupe`) REFERENCES `groupes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `membre_user_fk` FOREIGN KEY (`id_user`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `membre_ajoute_par_fk` FOREIGN KEY (`ajoute_par`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+COMMENT='Table de liaison entre groupes et utilisateurs membres';
+
+-- ------------------------------------------------------------------------------------------------
+-- Index composés supplémentaires pour optimiser les requêtes fréquentes
+-- ------------------------------------------------------------------------------------------------
+
+-- Index pour rechercher les groupes actifs d'un administrateur
+CREATE INDEX idx_groupes_admin_valide ON groupes(id_user, date_validite);
+
+-- Index pour rechercher les groupes par nom et administrateur
+CREATE INDEX idx_groupes_search ON groupes(name, id_user, date_creation);
+
+-- Index pour les requêtes de comptage de membres par groupe
+CREATE INDEX idx_membres_count_groupe ON groupe_membres(id_groupe, is_active);
+
+-- Index pour les requêtes de recherche de groupes d'un utilisateur
+CREATE INDEX idx_membres_user_groupes ON groupe_membres(id_user, is_active, date_ajout);
+
+-- Index pour l'historique d'ajout par administrateur
+CREATE INDEX idx_membres_admin_history ON groupe_membres(ajoute_par, date_ajout, is_active);
+
+
+-- ------------------------------------------------------------------------------------------------
+-- Table de partage entre utilisateurs et groupes
+-- ------------------------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `share_with` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_user` int(11) NOT NULL COMMENT 'Utilisateur qui partage (propriétaire)',
+  `id_groupe` int(11) NOT NULL COMMENT 'Groupe avec qui on partage',
+  `shared_type` enum('product','cart') NOT NULL COMMENT 'Type d\'objet partagé',
+  `shared_id` int(11) NOT NULL COMMENT 'ID de l\'objet partagé (product_id ou cart_id)',
+  `permissions` set('view','edit','delete','manage') NOT NULL DEFAULT 'view' COMMENT 'Permissions accordées',
+  `date_creation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `date_modification` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `date_expiration` datetime NULL COMMENT 'Date d\'expiration du partage (NULL = illimité)',
+  `partage_par` int(11) NOT NULL COMMENT 'Utilisateur ayant effectué le partage (peut être différent du propriétaire)',
+  `is_active` tinyint(1) NOT NULL DEFAULT 1 COMMENT '1=actif, 0=inactif',
+  `notes` text NULL COMMENT 'Notes sur le partage',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `share_unique` (`id_user`, `id_groupe`, `shared_type`, `shared_id`),
+  KEY `idx_share_user` (`id_user`),
+  KEY `idx_share_groupe` (`id_groupe`),
+  KEY `idx_share_type` (`shared_type`),
+  KEY `idx_share_object` (`shared_type`, `shared_id`),
+  KEY `idx_share_active` (`is_active`),
+  KEY `idx_share_expiration` (`date_expiration`),
+  KEY `idx_share_creation` (`date_creation`),
+  KEY `idx_share_partage_par` (`partage_par`),
+  CONSTRAINT `share_user_fk` FOREIGN KEY (`id_user`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `share_groupe_fk` FOREIGN KEY (`id_groupe`) REFERENCES `groupes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `share_partage_par_fk` FOREIGN KEY (`partage_par`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+COMMENT='Table de partage de produits et paniers avec des groupes';
+
+-- ------------------------------------------------------------------------------------------------
+-- Index composés pour optimiser les requêtes fréquentes
+-- ------------------------------------------------------------------------------------------------
+
+-- Index pour rechercher tous les partages d'un utilisateur
+CREATE INDEX idx_share_user_active ON share_with(id_user, is_active, date_creation);
+
+-- Index pour rechercher les partages reçus par un groupe
+CREATE INDEX idx_share_groupe_active ON share_with(id_groupe, is_active, shared_type);
+
+-- Index pour rechercher les partages d'un type d'objet spécifique
+CREATE INDEX idx_share_type_active ON share_with(shared_type, shared_id, is_active);
+
+-- Index pour les permissions et type d'objet
+CREATE INDEX idx_share_permissions ON share_with(shared_type, permissions, is_active);
+
+-- Index pour rechercher les partages expirés
+CREATE INDEX idx_share_expired ON share_with(date_expiration, is_active);
+
+-- Index pour l'historique des partages par utilisateur
+CREATE INDEX idx_share_history ON share_with(partage_par, date_creation, shared_type);
+
+-- Index composite pour requêtes complexes
+CREATE INDEX idx_share_user_groupe_type ON share_with(id_user, id_groupe, shared_type, is_active);
+
+-- Index pour rechercher les partages d'un objet spécifique avec permissions
+CREATE INDEX idx_share_object_permissions ON share_with(shared_type, shared_id, permissions, is_active);
