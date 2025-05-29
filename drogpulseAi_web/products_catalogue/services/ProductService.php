@@ -16,7 +16,7 @@ class ProductService
         $this->db = $db;
     }
     
-    public function getCatalogueData(array $filters): array 
+   public function getCatalogueData(array $filters): array 
     {
         try {
             $pdo = $this->db->getConnection();

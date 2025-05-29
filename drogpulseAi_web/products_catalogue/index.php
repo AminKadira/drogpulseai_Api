@@ -7,6 +7,7 @@
 // Chargement bootstrap et configuration
 require_once __DIR__ . '/bootstrap.php';
 
+
 // Gestion d'erreurs globale pour éviter exposer les détails techniques
 try {
     $controller = new CatalogueController($productService, $config);

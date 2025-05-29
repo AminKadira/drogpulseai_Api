@@ -1,8 +1,5 @@
 <?php
-/**
- * Bootstrap application - Point d'entrée centralisé
- * Configuration et initialisation des services
- */
+// bootstrap.php - Remplacer ligne 39 par :
 
 // Configuration des erreurs
 error_reporting(E_ALL);
@@ -12,14 +9,16 @@ ini_set('log_errors', 1);
 // Timezone
 date_default_timezone_set('Europe/Paris');
 
-// Autoloader simple
+// Inclusion directe de Database
+require_once __DIR__ . '/../../api/config/database.php';
+
+// Autoloader pour les autres classes
 spl_autoload_register(function ($class) {
     $directories = [
         __DIR__ . '/controllers/',
         __DIR__ . '/models/',
         __DIR__ . '/services/',
-        __DIR__ . '/utils/',
-        __DIR__ . '/../../api/config/'
+        __DIR__ . '/utils/'
     ];
     
     foreach ($directories as $dir) {

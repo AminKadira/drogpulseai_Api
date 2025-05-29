@@ -47,10 +47,10 @@ trait ProductUtilities
         }
         
         // Nettoyage et validation de l'URL
-        $cleanUrl = '../api/' . ltrim($photoUrl, '/');
+        $cleanUrl = '../../../api/' . ltrim($photoUrl, '/');
         
         // Vérification sécurité basique (pas de traversal)
-        if (strpos($cleanUrl, '..') !== false && strpos($cleanUrl, '../api/') !== 0) {
+        if (strpos($cleanUrl, '..') !== false && strpos($cleanUrl, '../../../api/') !== 0) {
             return '/assets/images/no-image.svg';
         }
         

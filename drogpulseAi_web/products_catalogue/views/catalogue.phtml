@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -355,6 +356,7 @@
             <?php foreach ($products as $product): ?>
             <article class="product-card" data-product-id="<?= $product['id'] ?>">
                 <div class="product-image">
+
                     <img src="<?= htmlspecialchars($product['image_url']) ?>" 
                          alt="<?= htmlspecialchars($product['name']) ?>" 
                          loading="lazy"

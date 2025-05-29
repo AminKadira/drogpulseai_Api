@@ -22,10 +22,12 @@ class CatalogueController
     public function index(): void 
     {
         try {
+         
             $filters = $this->validateAndSanitizeFilters($_GET);
+           
             $catalogueData = $this->productService->getCatalogueData($filters);
-            
-            $this->render('catalogue', [
+        
+            $viewData = [
                 'products' => $catalogueData['products'],
                 'totalCount' => $catalogueData['totalCount'],
                 'pagination' => $catalogueData['pagination'],
@@ -33,14 +35,19 @@ class CatalogueController
                 'currentPage' => $filters['page'],
                 'totalPages' => $catalogueData['totalPages'],
                 'config' => $this->config
-            ]);
+            ];
+      
+            $this->render('catalogue', $viewData);
             
         } catch (ValidationException $e) {
+            echo "ValidationException: " . $e->getMessage();
             $this->renderError($e->getMessage(), 400);
         } catch (DatabaseException $e) {
+            echo "DatabaseException: " . $e->getMessage();
             error_log("Catalogue DB error: " . $e->getMessage());
             $this->renderError("Erreur de chargement du catalogue", 500);
         } catch (Exception $e) {
+            echo "Exception générale: " . $e->getMessage();
             error_log("Catalogue error: " . $e->getMessage());
             $this->renderError("Une erreur technique est survenue", 500);
         }
