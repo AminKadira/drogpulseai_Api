@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catalogue Produits - DrogPulseAI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --gray-50: #f8fafc;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --transition: all 0.2s ease;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, var(--primary) 0%, #1d4ed8 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .filters-section {
+            background: var(--gray-50);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            border: 1px solid #e2e8f0;
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 20px -4px rgb(0 0 0 / 0.15);
+        }
+
+        .product-image {
+            position: relative;
+            aspect-ratio: 4/3;
+            overflow: hidden;
+            background: #f1f5f9;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .product-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .product-card:hover .product-overlay {
+            opacity: 1;
+        }
+
+        .btn-quick-view {
+            background: white;
+            color: var(--primary);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .btn-quick-view:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .product-info {
+            padding: 1.25rem;
+        }
+
+        .product-name {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin: 0 0 0.5rem 0;
+            line-height: 1.4;
+            color: #1f2937;
+        }
+
+        .product-reference {
+            color: var(--secondary);
+            font-size: 0.875rem;
+            margin: 0 0 0.75rem 0;
+        }
+
+        .product-price {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .badge-success { 
+            background: #dcfce7 !important; 
+            color: #166534 !important; 
+        }
+        .badge-warning { 
+            background: #fef3c7 !important; 
+            color: #92400e !important; 
+        }
+        .badge-danger { 
+            background: #fee2e2 !important; 
+            color: #991b1b !important; 
+        }
+
+        .pagination-modern .page-link {
+            border: none;
+            color: var(--secondary);
+            padding: 0.75rem 1rem;
+            margin: 0 0.25rem;
+            border-radius: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .pagination-modern .page-item.active .page-link {
+            background: var(--primary);
+            color: white;
+        }
+
+        .pagination-modern .page-link:hover {
+            background: #e2e8f0;
+            color: var(--primary);
+        }
+
+        .results-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .sort-dropdown .dropdown-toggle::after {
+            margin-left: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 1rem;
+            }
+            
+            .results-info {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .filter-tag {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            margin: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="page-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="mb-0">Catalogue Produits</h1>
+                    <p class="mb-0 opacity-75 mt-2">Découvrez notre sélection de produits de qualité</p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <span class="badge bg-light text-dark fs-6"><?= $totalCount ?> produits</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Filtres -->
+        <section class="filters-section">
+            <form method="GET" id="filtersForm" class="row g-3">
+                <div class="col-md-4">
+                    <label for="search" class="form-label fw-semibold">
+                        <i class="bi bi-search"></i> Recherche
+                    </label>
+                    <input type="text" class="form-control" id="search" name="search" 
+                           placeholder="Référence, nom, description..." 
+                           value="<?= htmlspecialchars($filters['search']) ?>">
+                </div>
+                
+                <div class="col-md-2">
+                    <label for="min_price" class="form-label fw-semibold">Prix min</label>
+                    <input type="number" class="form-control" id="min_price" name="min_price" 
+                           placeholder="0.00" step="0.01" min="0"
+                           value="<?= $filters['min_price'] ?? '' ?>">
+                </div>
+                
+                <div class="col-md-2">
+                    <label for="max_price" class="form-label fw-semibold">Prix max</label>
+                    <input type="number" class="form-control" id="max_price" name="max_price" 
+                           placeholder="999.99" step="0.01" min="0"
+                           value="<?= $filters['max_price'] ?? '' ?>">
+                </div>
+                
+                <div class="col-md-2">
+                    <label for="stock" class="form-label fw-semibold">Stock</label>
+                    <select class="form-select" id="stock" name="stock">
+                        <option value="">Tous</option>
+                        <option value="in_stock" <?= $filters['stock_filter'] === 'in_stock' ? 'selected' : '' ?>>En stock</option>
+                        <option value="low_stock" <?= $filters['stock_filter'] === 'low_stock' ? 'selected' : '' ?>>Stock faible</option>
+                        <option value="out_of_stock" <?= $filters['stock_filter'] === 'out_of_stock' ? 'selected' : '' ?>>Rupture</option>
+                    </select>
+                </div>
+                
+                <div class="col-md-2 d-flex align-items-end">
+                    <div class="d-grid w-100 gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-funnel"></i> Filtrer
+                        </button>
+                        <?php if (!empty($filters['search']) || $filters['min_price'] || $filters['max_price'] || !empty($filters['stock_filter'])): ?>
+                        <a href="?" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-x-circle"></i> Reset
+                        </a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Filtres actifs -->
+            <?php if (!empty($filters['search']) || $filters['min_price'] || $filters['max_price'] || !empty($filters['stock_filter'])): ?>
+            <div class="mt-3">
+                <small class="text-muted">Filtres actifs:</small>
+                <?php if (!empty($filters['search'])): ?>
+                    <span class="filter-tag">Recherche: "<?= htmlspecialchars($filters['search']) ?>"</span>
+                <?php endif; ?>
+                <?php if ($filters['min_price']): ?>
+                    <span class="filter-tag">Prix min: <?= $filters['min_price'] ?>€</span>
+                <?php endif; ?>
+                <?php if ($filters['max_price']): ?>
+                    <span class="filter-tag">Prix max: <?= $filters['max_price'] ?>€</span>
+                <?php endif; ?>
+                <?php if (!empty($filters['stock_filter'])): ?>
+                    <span class="filter-tag">Stock: <?= ucfirst(str_replace('_', ' ', $filters['stock_filter'])) ?></span>
+                <?php endif; ?>
+            </div>
+            <?php endif; ?>
+        </section>
+
+        <!-- Résultats et tri -->
+        <div class="results-info">
+            <div>
+                <strong><?= $totalCount ?></strong> produits trouvés
+                <?php if ($totalPages > 1): ?>
+                    <span class="text-muted">- Page <?= $currentPage ?> sur <?= $totalPages ?></span>
+                <?php endif; ?>
+            </div>
+            
+            <div class="sort-dropdown">
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-sort-alpha-down"></i> Trier par
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="?<?= http_build_query(array_merge($_GET, ['sort' => 'reference', 'dir' => 'asc'])) ?>">
+                            Référence A-Z
+                        </a></li>
+                        <li><a class="dropdown-item" href="?<?= http_build_query(array_merge($_GET, ['sort' => 'name', 'dir' => 'asc'])) ?>">
+                            Nom A-Z
+                        </a></li>
+                        <li><a class="dropdown-item" href="?<?= http_build_query(array_merge($_GET, ['sort' => 'prix_vente_conseille', 'dir' => 'asc'])) ?>">
+                            Prix croissant
+                        </a></li>
+                        <li><a class="dropdown-item" href="?<?= http_build_query(array_merge($_GET, ['sort' => 'prix_vente_conseille', 'dir' => 'desc'])) ?>">
+                            Prix décroissant
+                        </a></li>
+                        <li><a class="dropdown-item" href="?<?= http_build_query(array_merge($_GET, ['sort' => 'quantity', 'dir' => 'desc'])) ?>">
+                            Stock disponible
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading -->
+        <div class="loading" id="loading">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Chargement...</span>
+            </div>
+        </div>
+
+        <!-- Grille produits -->
+        <?php if (empty($products)): ?>
+        <div class="text-center py-5">
+            <i class="bi bi-search display-1 text-muted"></i>
+            <h3 class="mt-3">Aucun produit trouvé</h3>
+            <p class="text-muted">Essayez de modifier vos critères de recherche</p>
+            <a href="?" class="btn btn-primary">Voir tous les produits</a>
+        </div>
+        <?php else: ?>
+        <div class="products-grid" id="productsGrid">
+            <?php foreach ($products as $product): ?>
+            <article class="product-card" data-product-id="<?= $product['id'] ?>">
+                <div class="product-image">
+                    <img src="<?= htmlspecialchars($product['image_url']) ?>" 
+                         alt="<?= htmlspecialchars($product['name']) ?>" 
+                         loading="lazy"
+                         onerror="this.src='/assets/images/no-image.svg'">
+                    <div class="product-overlay">
+                        <button class="btn-quick-view" onclick="showProductDetails(<?= $product['id'] ?>)">
+                            <i class="bi bi-eye"></i> Voir détails
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="product-info">
+                    <h3 class="product-name"><?= htmlspecialchars($product['name']) ?></h3>
+                    <p class="product-reference">Réf: <?= htmlspecialchars($product['reference']) ?></p>
+                    <div class="product-price"><?= $product['formatted_price'] ?></div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="badge <?= $product['stock_status']['class'] ?>">
+                            <?= $product['stock_status']['label'] ?>
+                        </span>
+                        <?php if ($product['quantity'] > 0): ?>
+                        <small class="text-muted"><?= $product['quantity'] ?> disponible(s)</small>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </article>
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+
+        <!-- Pagination -->
+        <?php if ($pagination['total'] > 1): ?>
+        <nav aria-label="Navigation pages">
+            <ul class="pagination pagination-modern justify-content-center">
+                <?php if ($pagination['has_prev']): ?>
+                <li class="page-item">
+                    <a class="page-link" href="<?= $pagination['prev_url'] ?>" aria-label="Précédent">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+                <?php endif; ?>
+                
+                <?php foreach ($pagination['pages'] as $page): ?>
+                <li class="page-item <?= $page['current'] ? 'active' : '' ?>">
+                    <a class="page-link" href="<?= $page['url'] ?>"><?= $page['number'] ?></a>
+                </li>
+                <?php endforeach; ?>
+                
+                <?php if ($pagination['has_next']): ?>
+                <li class="page-item">
+                    <a class="page-link" href="<?= $pagination['next_url'] ?>" aria-label="Suivant">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+                <?php endif; ?>
+            </ul>
+        </nav>
+        <?php endif; ?>
+    </div>
+
+    <!-- Modal détails produit -->
+    <div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Détails du produit</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="modalContent">
+                    <div class="text-center py-4">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Chargement...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Auto-submit formulaire sur changement
+        document.getElementById('filtersForm').addEventListener('change', function(e) {
+            if (e.target.type !== 'text') {
+                this.submit();
+            }
+        });
+
+        // Détails produit
+        async function showProductDetails(productId) {
+            const modal = new bootstrap.Modal(document.getElementById('productModal'));
+            const modalContent = document.getElementById('modalContent');
+            
+            // Reset contenu et afficher modal
+            modalContent.innerHTML = `
+                <div class="text-center py-4">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Chargement...</span>
+                    </div>
+                </div>
+            `;
+            modal.show();
+            
+            try {
+                const response = await fetch(`product_details_ajax.php?id=${productId}`);
+                if (response.ok) {
+                    modalContent.innerHTML = await response.text();
+                } else {
+                    throw new Error('Erreur de chargement');
+                }
+            } catch (error) {
+                modalContent.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        Erreur lors du chargement des détails du produit.
+                    </div>
+                `;
+            }
+        }
+
+        // Loading état sur soumission
+        document.getElementById('filtersForm').addEventListener('submit', function() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('productsGrid').style.opacity = '0.5';
+        });
+    </script>
+</body>
+</html>

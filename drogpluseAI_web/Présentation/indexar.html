@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DrogPulseAI - L'Intelligence Artificielle au Service de Votre Quincaillerie</title>
+    <title>DrogPulseAi - الذكاء الاصطناعي فخدمة المحل ديالك</title>
     <style>
         * {
             margin: 0;
@@ -30,10 +30,17 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            line-height: 1.6;
+            font-family: 'Amiri', 'Cairo', 'Tajawal', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.8;
             color: var(--text-dark);
             overflow-x: hidden;
+            direction: rtl;
+            text-align: right;
+        }
+
+        /* RTL Adjustments */
+        .rtl-flip {
+            transform: scaleX(-1);
         }
 
         /* Animations */
@@ -75,7 +82,7 @@
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             z-index: 1000;
-            padding: 1rem 0; /* Increased padding for mobile */
+            padding: 1rem 0;
             box-shadow: var(--shadow);
         }
 
@@ -87,6 +94,7 @@
             align-items: center;
             padding: 0 1rem;
             position: relative;
+            flex-direction: row-reverse; /* RTL adjustment */
         }
 
         .logo {
@@ -99,6 +107,7 @@
             display: flex;
             align-items: center;
             gap: 0.4rem;
+            flex-direction: row-reverse; /* RTL adjustment */
         }
 
         .logo-icon {
@@ -146,34 +155,6 @@
             color: var(--primary);
         }
 
-        /* Desktop Navigation */
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 1.5rem;
-            margin: 0;
-            padding: 0;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text-dark);
-            font-weight: 500;
-            transition: all 0.3s;
-            font-size: 1.1rem;
-            padding: 0.5rem 0.75rem;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .nav-links a:hover {
-            color: var(--primary);
-            background: rgba(0, 188, 212, 0.1);
-            transform: translateY(-1px);
-        }
-
         .nav-cta-buttons {
             display: flex;
             gap: 0.75rem;
@@ -199,23 +180,6 @@
             border-color: rgba(255, 255, 255, 0.2);
         }
 
-        .cta-button {
-            background: var(--gradient-primary);
-            color: white;
-            padding: 0.6rem 1.2rem;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.3s;
-            box-shadow: var(--shadow);
-        }
-
-        .cta-button:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-        }
-
         /* Hero Section */
         .hero {
             min-height: 100vh;
@@ -224,6 +188,7 @@
             align-items: center;
             position: relative;
             overflow: hidden;
+            padding: 7rem 0 3rem;
         }
 
         .hero::before {
@@ -233,62 +198,83 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="1" fill="white" opacity="0.1"/><circle cx="10" cy="90" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.05"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.05"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
         }
 
         .hero-container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 2rem;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
+            padding: 0 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
             align-items: center;
             position: relative;
             z-index: 1;
+            text-align: center;
+        }
+
+        .hero-content {
+            order: 2;
         }
 
         .hero-content h1 {
-            font-size: 3.5rem;
+            font-size: 2.2rem;
             font-weight: 800;
             color: white;
-            margin-bottom: 1.5rem;
-            line-height: 1.1;
+            margin-bottom: 1rem;
+            line-height: 1.4;
         }
 
         .hero-tagline {
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             font-weight: 300;
+            line-height: 1.6;
         }
 
         .hero-cta {
             display: flex;
+            flex-direction: column;
             gap: 1rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
+            width: 100%;
+            max-width: 300px;
         }
 
         .btn-primary {
             background: var(--gradient-accent);
             color: white;
-            padding: 1rem 2rem;
-            border-radius: 50px;
+            padding: 1rem 1.5rem;
+            border-radius: 25px;
             text-decoration: none;
             font-weight: 600;
             transition: all 0.3s;
             box-shadow: var(--shadow);
+            font-size: 1rem;
+            text-align: center;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .btn-secondary {
             background: rgba(255, 255, 255, 0.2);
             color: white;
-            padding: 1rem 2rem;
-            border-radius: 50px;
+            padding: 1rem 1.5rem;
+            border-radius: 25px;
             text-decoration: none;
             font-weight: 600;
             transition: all 0.3s;
             backdrop-filter: blur(10px);
+            font-size: 1rem;
+            text-align: center;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .btn-primary:hover, .btn-secondary:hover {
@@ -298,27 +284,28 @@
 
         .hero-visual {
             position: relative;
-            height: 500px;
+            height: 300px;
+            width: 180px;
+            order: 1;
         }
 
         .phone-mockup {
-            width: 250px;
-            height: 500px;
+            width: 180px;
+            height: 300px;
             background: white;
-            border-radius: 30px;
-            position: absolute;
-            right: 0;
-            top: 0;
+            border-radius: 25px;
+            position: relative;
             box-shadow: var(--shadow-lg);
-            padding: 20px;
+            padding: 15px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            animation: float 6s ease-in-out infinite;
         }
 
         .phone-screen {
             background: var(--gradient-primary);
-            border-radius: 20px;
+            border-radius: 15px;
             height: 100%;
             position: relative;
             overflow: hidden;
@@ -326,39 +313,71 @@
 
         .screenshot-carousel {
             position: absolute;
-            width: 100%;
+            top: 0;
+            left: 0;
+            width: 400%;
             height: 100%;
             display: flex;
-            animation: slideshow 12s infinite;
+            animation: slideshow 16s infinite ease-in-out;
         }
 
         .screenshot-slide {
-            min-width: 100%;
+            width: 25%;
             height: 100%;
             position: relative;
             overflow: hidden;
+            flex-shrink: 0;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .screenshot-slide img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 20px;
+            border-radius: 15px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 2;
+        }
+
+        .screenshot-slide img:not([src]),
+        .screenshot-slide img[src=""],
+        .screenshot-slide img:not([src*=".jpg"]):not([src*=".png"]):not([src*=".gif"]):not([src*=".webp"]) {
+            display: none;
         }
 
         @keyframes slideshow {
             0%, 20% { transform: translateX(0%); }
-            25%, 40% { transform: translateX(-100%); }
-            45%, 60% { transform: translateX(-200%); }
-            65%, 80% { transform: translateX(-300%); }
-            85%, 100% { transform: translateX(0%); }
+            25%, 45% { transform: translateX(-25%); }
+            50%, 70% { transform: translateX(-50%); }
+            75%, 95% { transform: translateX(-75%); }
+            100% { transform: translateX(0%); }
         }
 
-        /* Stats Section */
+        .urgency-badge {
+            display: inline-block;
+            background: var(--gradient-accent);
+            padding: 0.4rem 1rem;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        /* Scroll offset for fixed header */
+        #avantages, #fonctionnalites, #temoignages, #contact {
+            scroll-margin-top: 5rem;
+        }
+
+        /* Stats Section - Mobile Optimized */
         .stats {
             background: var(--white);
-            padding: 4rem 0;
-            margin-top: -2rem;
+            padding: 3rem 0;
+            margin-top: -1rem;
             position: relative;
             z-index: 2;
         }
@@ -366,66 +385,70 @@
         .stats-container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 2rem;
+            padding: 0 1rem;
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 2rem;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
             text-align: center;
         }
 
         .stat-item h3 {
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: 800;
             color: var(--primary);
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.3rem;
         }
 
         .stat-item p {
             color: var(--text-light);
             font-weight: 500;
+            font-size: 0.9rem;
         }
 
-        /* AI Benefits Section */
+        /* AI Benefits Section - Mobile First */
         .ai-benefits {
-            padding: 6rem 0;
+            padding: 4rem 0;
             background: var(--bg-light);
         }
 
         .section-header {
             text-align: center;
-            margin-bottom: 4rem;
+            margin-bottom: 3rem;
+            padding: 0 1rem;
         }
 
         .section-title {
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: 800;
             margin-bottom: 1rem;
             background: var(--gradient-primary);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            line-height: 1.4;
         }
 
         .section-subtitle {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: var(--text-light);
-            max-width: 600px;
+            max-width: 100%;
             margin: 0 auto;
+            line-height: 1.6;
         }
 
         .benefits-grid {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 2rem;
+            padding: 0 1rem;
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
         }
 
         .benefit-card {
             background: white;
-            padding: 2rem;
-            border-radius: 20px;
+            padding: 1.5rem;
+            border-radius: 15px;
             box-shadow: var(--shadow);
             transition: all 0.3s;
             position: relative;
@@ -433,7 +456,7 @@
         }
 
         .benefit-card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-5px);
             box-shadow: var(--shadow-lg);
         }
 
@@ -441,40 +464,42 @@
             content: '';
             position: absolute;
             top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
+            right: 0; /* RTL adjustment */
+            left: auto;
+            bottom: 0;
+            width: 4px;
             background: var(--gradient-primary);
         }
 
         .benefit-icon {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             background: var(--gradient-primary);
-            border-radius: 15px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 1.5rem;
-            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
             color: white;
         }
 
         .benefit-card h3 {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 700;
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
             color: var(--text-dark);
         }
 
         .benefit-card p {
             color: var(--text-light);
             line-height: 1.6;
+            font-size: 0.95rem;
         }
 
-        /* Movement Section */
+        /* Movement Section - Mobile Optimized */
         .movement {
-            padding: 6rem 0;
+            padding: 4rem 0;
             background: var(--gradient-primary);
             color: white;
             text-align: center;
@@ -482,66 +507,46 @@
             overflow: hidden;
         }
 
-        .movement::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
-            background-size: 50px 50px;
-            animation: float 20s linear infinite;
-        }
-
         .movement-content {
             max-width: 800px;
             margin: 0 auto;
-            padding: 0 2rem;
+            padding: 0 1rem;
             position: relative;
             z-index: 1;
         }
 
         .movement h2 {
-            font-size: 2.8rem;
+            font-size: 2rem;
             font-weight: 800;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
+            line-height: 1.4;
         }
 
         .movement p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
             opacity: 0.9;
+            line-height: 1.6;
         }
 
-        .urgency-badge {
-            display: inline-block;
-            background: var(--gradient-accent);
-            padding: 0.5rem 1.5rem;
-            border-radius: 50px;
-            font-weight: 600;
-            margin-bottom: 2rem;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        /* Features Grid */
+        /* Features Grid - Mobile First */
         .features {
-            padding: 6rem 0;
+            padding: 4rem 0;
             background: white;
         }
 
         .features-grid {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 2rem;
+            padding: 0 1rem;
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 4rem;
+            grid-template-columns: 1fr;
+            gap: 2.5rem;
             align-items: center;
         }
 
         .feature-content h3 {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 700;
             margin-bottom: 1rem;
             color: var(--text-dark);
@@ -549,21 +554,24 @@
 
         .feature-list {
             list-style: none;
-            margin: 1.5rem 0;
+            margin: 1rem 0;
         }
 
         .feature-list li {
-            padding: 0.5rem 0;
+            padding: 0.7rem 0;
             display: flex;
             align-items: center;
             color: var(--text-light);
+            font-size: 0.95rem;
+            flex-direction: row-reverse; /* RTL adjustment */
         }
 
         .feature-list li::before {
             content: '✓';
             color: var(--success);
             font-weight: bold;
-            margin-right: 1rem;
+            margin-left: 1rem; /* RTL adjustment */
+            margin-right: 0;
             background: rgba(16, 185, 129, 0.1);
             width: 24px;
             height: 24px;
@@ -572,35 +580,37 @@
             align-items: center;
             justify-content: center;
             font-size: 0.8rem;
+            flex-shrink: 0;
         }
 
         .feature-visual {
             background: var(--bg-light);
-            border-radius: 20px;
-            padding: 2rem;
+            border-radius: 15px;
+            padding: 1.5rem;
             text-align: center;
             position: relative;
+            order: -1;
         }
 
-        /* Testimonials */
+        /* Testimonials - Mobile Optimized */
         .testimonials {
-            padding: 6rem 0;
+            padding: 4rem 0;
             background: var(--bg-light);
         }
 
         .testimonial-grid {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 2rem;
+            padding: 0 1rem;
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
         }
 
         .testimonial-card {
             background: white;
-            padding: 2rem;
-            border-radius: 20px;
+            padding: 1.5rem;
+            border-radius: 15px;
             box-shadow: var(--shadow);
             position: relative;
         }
@@ -608,9 +618,10 @@
         .testimonial-card::before {
             content: '"';
             position: absolute;
-            top: -10px;
-            left: 2rem;
-            font-size: 4rem;
+            top: -5px;
+            right: 1.5rem; /* RTL adjustment */
+            left: auto;
+            font-size: 3rem;
             color: var(--primary);
             font-weight: bold;
             opacity: 0.3;
@@ -618,23 +629,26 @@
 
         .testimonial-text {
             font-style: italic;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             color: var(--text-light);
+            font-size: 0.95rem;
+            line-height: 1.6;
         }
 
         .testimonial-author {
             font-weight: 600;
             color: var(--text-dark);
+            font-size: 0.95rem;
         }
 
         .testimonial-company {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: var(--text-light);
         }
 
-        /* CTA Section */
+        /* Final CTA - Mobile Optimized */
         .final-cta {
-            padding: 6rem 0;
+            padding: 4rem 0;
             background: var(--gradient-accent);
             color: white;
             text-align: center;
@@ -643,36 +657,47 @@
         .cta-content {
             max-width: 800px;
             margin: 0 auto;
-            padding: 0 2rem;
+            padding: 0 1rem;
         }
 
         .cta-content h2 {
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: 800;
             margin-bottom: 1rem;
+            line-height: 1.4;
         }
 
         .cta-content p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
             opacity: 0.9;
+            line-height: 1.6;
         }
 
         .cta-buttons {
             display: flex;
+            flex-direction: column;
             gap: 1rem;
             justify-content: center;
-            flex-wrap: wrap;
+            align-items: center;
+            max-width: 300px;
+            margin: 0 auto;
         }
 
         .btn-large {
-            padding: 1.2rem 2.5rem;
-            font-size: 1.1rem;
-            border-radius: 50px;
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 25px;
             text-decoration: none;
             font-weight: 600;
             transition: all 0.3s;
             box-shadow: var(--shadow);
+            width: 100%;
+            text-align: center;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .btn-white {
@@ -685,60 +710,6 @@
             color: white;
             backdrop-filter: blur(10px);
             border: 2px solid rgba(255, 255, 255, 0.3);
-        }
-
-        /* Footer */
-        footer {
-            background: var(--gradient-deep);
-            color: white;
-            padding: 3rem 0 1rem;
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 2rem;
-        }
-
-        .footer-section h4 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: var(--accent);
-        }
-
-        .footer-section a {
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
-            transition: color 0.3s;
-            display: block;
-            margin-bottom: 0.5rem;
-        }
-
-        .footer-section a:hover {
-            color: white;
-        }
-
-        .footer-bottom {
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            margin-top: 2rem;
-            padding-top: 2rem;
-            text-align: center;
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        .contact-info {
-            margin-bottom: 1rem;
-        }
-
-        .contact-country {
-            font-weight: 600;
-            color: var(--accent-light);
-            margin-bottom: 0.3rem;
-            font-size: 0.9rem;
         }
 
         /* Modal/Popup Styles - Mobile Optimized */
@@ -794,7 +765,8 @@
         .modal-close {
             position: absolute;
             top: 1rem;
-            right: 1rem;
+            left: 1rem; /* RTL adjustment */
+            right: auto;
             background: rgba(255, 255, 255, 0.2);
             border: none;
             color: white;
@@ -845,6 +817,7 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            flex-direction: row-reverse; /* RTL adjustment */
         }
 
         .contact-item {
@@ -856,12 +829,14 @@
             border-radius: 12px;
             margin-bottom: 1rem;
             transition: all 0.3s;
-            border-left: 4px solid var(--primary);
+            border-right: 4px solid var(--primary); /* RTL adjustment */
+            border-left: none;
+            flex-direction: row-reverse; /* RTL adjustment */
         }
 
         .contact-item:hover {
             background: rgba(6, 182, 212, 0.05);
-            transform: translateX(3px);
+            transform: translateX(-3px); /* RTL adjustment */
         }
 
         .contact-icon {
@@ -879,6 +854,7 @@
 
         .contact-info {
             flex: 1;
+            text-align: right; /* RTL adjustment */
         }
 
         .contact-label {
@@ -924,18 +900,19 @@
         .mobile-nav {
             position: fixed;
             top: 0;
-            left: -100%;
+            right: -100%; /* RTL adjustment */
+            left: auto;
             width: 280px;
             height: 100vh;
             background: white;
             box-shadow: var(--shadow-lg);
             z-index: 9999;
-            transition: left 0.3s ease;
+            transition: right 0.3s ease; /* RTL adjustment */
             overflow-y: auto;
         }
 
         .mobile-nav.active {
-            left: 0;
+            right: 0; /* RTL adjustment */
         }
 
         .mobile-nav-header {
@@ -945,6 +922,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-direction: row-reverse; /* RTL adjustment */
         }
 
         .mobile-nav-close {
@@ -976,6 +954,7 @@
             font-weight: 500;
             transition: all 0.3s;
             border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            flex-direction: row-reverse; /* RTL adjustment */
         }
 
         .mobile-nav-links a:hover {
@@ -1026,6 +1005,11 @@
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
+        }
+
+        .mobile-overlay.active {
+            opacity: 1;
+            visibility: visible;
         }
 
         /* Footer - Mobile Optimized */
@@ -1084,10 +1068,144 @@
             font-size: 0.85rem;
         }
 
-        /* Desktop Footer */
+        /* Desktop Responsive Breakpoints */
         @media (min-width: 768px) {
-            footer {
-                padding: 3rem 0 1rem;
+            .mobile-menu-toggle {
+                display: none !important;
+            }
+
+            .mobile-nav, .mobile-overlay {
+                display: none !important;
+            }
+
+            .nav-container {
+                padding: 0 2rem;
+            }
+
+            .logo {
+                font-size: 1.6rem;
+            }
+
+            .logo-icon {
+                width: 45px;
+                height: 45px;
+            }
+
+            .nav-cta-buttons {
+                gap: 1rem;
+            }
+
+            .product-button {
+                padding: 0.75rem 1.5rem;
+                font-size: 1rem;
+            }
+
+            .hero {
+                padding: 6rem 0 4rem;
+            }
+
+            .hero-container {
+                flex-direction: row;
+                gap: 4rem;
+                text-align: right;
+                padding: 0 2rem;
+            }
+
+            .hero-content {
+                order: 1;
+                flex: 1;
+            }
+
+            .hero-content h1 {
+                font-size: 3rem;
+            }
+
+            .hero-tagline {
+                font-size: 1.2rem;
+            }
+
+            .hero-cta {
+                flex-direction: row;
+                gap: 1rem;
+                max-width: none;
+            }
+
+            .hero-visual {
+                order: 2;
+                height: 450px;
+                width: 250px;
+            }
+
+            .phone-mockup {
+                width: 250px;
+                height: 450px;
+                padding: 20px;
+                animation: float 6s ease-in-out infinite;
+            }
+
+            .stats-container {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 2rem;
+            }
+
+            .stat-item h3 {
+                font-size: 2.5rem;
+            }
+
+            .stat-item p {
+                font-size: 1rem;
+            }
+
+            .section-title {
+                font-size: 2.5rem;
+            }
+
+            .section-subtitle {
+                font-size: 1.2rem;
+                max-width: 600px;
+            }
+
+            .benefits-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
+                padding: 0 2rem;
+            }
+
+            .movement h2 {
+                font-size: 2.5rem;
+            }
+
+            .movement p {
+                font-size: 1.2rem;
+            }
+
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 4rem;
+                padding: 0 2rem;
+            }
+
+            .feature-content h3 {
+                font-size: 1.8rem;
+            }
+
+            .feature-visual {
+                order: 0;
+            }
+
+            .testimonial-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
+                padding: 0 2rem;
+            }
+
+            .cta-content h2 {
+                font-size: 2.5rem;
+            }
+
+            .cta-buttons {
+                flex-direction: row;
+                max-width: none;
             }
 
             .footer-content {
@@ -1098,46 +1216,31 @@
         }
 
         @media (min-width: 1024px) {
+            .benefits-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .testimonial-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .hero-content h1 {
+                font-size: 3.5rem;
+            }
+
             .footer-content {
                 grid-template-columns: repeat(4, 1fr);
             }
         }
-        @media (max-width: 768px) {
-            .nav-links {
+
+        /* Mobile Only Styles */
+        @media (max-width: 767px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .nav-cta-buttons {
                 display: none;
-            }
-
-            .hero-container {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-
-            .hero-content h1 {
-                font-size: 2.5rem;
-            }
-
-            .stats-container {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .benefits-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .testimonial-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .footer-content {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .cta-buttons {
-                flex-direction: column;
             }
         }
 
@@ -1158,26 +1261,18 @@
     <!-- Navigation -->
     <nav>
         <div class="nav-container">
-            <div class="logo">
-                <div class="logo-icon">
-                    <img src="logo.png" alt="DrogPulseAI Logo" />
-                </div>
-                <span>DrogPulseAI</span>
-            </div>
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
             
-            <!-- Desktop Navigation 
-            <ul class="nav-links">
-                <li><a href="#avantages" title="Avantages IA">⚡</a></li>
-                <li><a href="#fonctionnalites" title="Fonctionnalités">⚙️</a></li>
-                <li><a href="#temoignages" title="Témoignages">⭐</a></li>
-                <li><a href="#contact" title="Contact">📞</a></li>
-            </ul>-->
             <div class="nav-cta-buttons">
-                <a href="https://drogpulseai.shop/prd" class="product-button" target="_blank">Produit</a>
+                <a href="https://drogpulseai.shop/prd" class="product-button" target="_blank">المنتج</a>
             </div>
 
-            <!-- Mobile Menu Toggle -->
-            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+            <div class="logo">
+                <span>DrogPulseAi</span>
+                <div class="logo-icon">
+                    <img src="logo.png" alt="شعار DrogPulseAi" />
+                </div>
+            </div>
         </div>
     </nav>
 
@@ -1185,38 +1280,38 @@
     <div class="mobile-overlay" onclick="closeMobileMenu()"></div>
     <nav class="mobile-nav">
         <div class="mobile-nav-header">
-            <div class="logo">
-                <div class="logo-icon">
-                    <img src="logo.png" alt="DrogPulseAI Logo" />
-                </div>
-                <span style="font-size: 1.2rem;">DrogPulseAI</span>
-            </div>
             <button class="mobile-nav-close" onclick="closeMobileMenu()">&times;</button>
+            <div class="logo">
+                <span style="font-size: 1.2rem;">DrogPulseAi</span>
+                <div class="logo-icon">
+                    <img src="logo.png" alt="شعار DrogPulseAi" />
+                </div>
+            </div>
         </div>
         <div class="mobile-nav-links">
             <a href="#avantages" onclick="closeMobileMenu()">
+                <span>مزايا الذكاء الاصطناعي</span>
                 <span class="icon">⚡</span>
-                <span>Avantages IA</span>
             </a>
             <a href="#fonctionnalites" onclick="closeMobileMenu()">
+                <span>المميزات</span>
                 <span class="icon">⚙️</span>
-                <span>Fonctionnalités</span>
             </a>
             <a href="#temoignages" onclick="closeMobileMenu()">
+                <span>شهادات العملاء</span>
                 <span class="icon">⭐</span>
-                <span>Témoignages</span>
             </a>
             <a href="#contact" onclick="closeMobileMenu()">
+                <span>اتصل بنا</span>
                 <span class="icon">📞</span>
-                <span>Contact</span>
             </a>
         </div>
         <div class="mobile-nav-cta">
             <a href="https://drogpulseai.shop/prd" class="product-btn" target="_blank">
-                🛍️ Voir le Produit
+                🛍️ شوف المنتج
             </a>
             <a href="javascript:void(0)" onclick="openModal(); closeMobileMenu();" class="demo-btn">
-                🚀 Demander une Démo
+                🚀 طلب عرض توضيحي
             </a>
         </div>
     </nav>
@@ -1225,32 +1320,32 @@
     <section class="hero">
         <div class="hero-container">
             <div class="hero-content">
-                <h1>Quand Votre Droguerie Bat au Rythme de l'Intelligence</h1>
+                <h1>فاش محلك يخدم بنبضة الذكاء الاصطناعي</h1>
                 <p class="hero-tagline">
-                    DrogPulseAI : L'application qui synchronise votre quincaillerie avec le pouls de l'Intelligence Artificielle. 
-                    Chaque battement optimise vos ventes, chaque pulsation augmente vos profits.
+                    DrogPulseAi: التطبيق اللي كيخلي محل  ديالك يخدم بالذكاء الاصطناعي. 
+                    كل نبضة كتحسن من البيع ديالك، وكل دقة كتزيد الأرباح ديالك.
                 </p>
                 <div class="hero-cta">
-                    <a href="javascript:void(0)" onclick="openModal()" class="btn-primary">Démarrer Maintenant</a>
-                    <a href="#avantages" class="btn-secondary">Découvrir l'IA</a>
+                    <a href="javascript:void(0)" onclick="openModal()" class="btn-primary">ابدا دابا</a>
+                    <a href="#avantages" class="btn-secondary">اكتشف الذكاء الاصطناعي</a>
                 </div>
-                <div class="urgency-badge">⚡ Rejoignez le mouvement dès aujourd'hui</div>
+                <div class="urgency-badge">⚡ انضم للحركة من اليوم</div>
             </div>
             <div class="hero-visual">
                 <div class="phone-mockup animate-float">
                     <div class="phone-screen">
                         <div class="screenshot-carousel">
                             <div class="screenshot-slide">
-                                <img src="phone-screen1.jpg" alt="DrogPulseAI Dashboard" />
+                                <img src="phone-screen1.jpg" alt="لوحة تحكم DrogPulseAi" />
                             </div>
                             <div class="screenshot-slide">
-                                <img src="phone-screen2.jpg" alt="Gestion Contacts" />
+                                <img src="phone-screen2.jpg" alt="إدارة العملاء" />
                             </div>
                             <div class="screenshot-slide">
-                                <img src="phone-screen3.jpg" alt="Gestion Produits" />
+                                <img src="phone-screen3.jpg" alt="إدارة المنتجات" />
                             </div>
                             <div class="screenshot-slide">
-                                <img src="phone-screen4.jpg" alt="Analytics IA" />
+                                <img src="phone-screen4.jpg" alt="تحليلات الذكاء الاصطناعي" />
                             </div>
                         </div>
                     </div>
@@ -1263,20 +1358,20 @@
     <section class="stats">
         <div class="stats-container">
             <div class="stat-item fade-in">
-                <h3>78%</h3>
-                <p>D'augmentation des ventes</p>
+                <h3>%78</h3>
+                <p>زيادة في المبيعات</p>
             </div>
             <div class="stat-item fade-in">
-                <h3>85%</h3>
-                <p>De gain de temps</p>
+                <h3>%85</h3>
+                <p>توفير في الوقت</p>
             </div>
             <div class="stat-item fade-in">
-                <h3>92%</h3>
-                <p>De satisfaction client</p>
+                <h3>%92</h3>
+                <p>رضا العملاء</p>
             </div>
             <div class="stat-item fade-in">
                 <h3>3x</h3>
-                <p>Plus d'efficacité</p>
+                <p>أكثر فعالية</p>
             </div>
         </div>
     </section>
@@ -1284,42 +1379,42 @@
     <!-- AI Benefits Section -->
     <section class="ai-benefits" id="avantages">
         <div class="section-header">
-            <h2 class="section-title">Pourquoi l'IA Transforme la Droguerie Marocaine</h2>
+            <h2 class="section-title">علاش الذكاء الاصطناعي كيغير محلات  فالمغرب</h2>
             <p class="section-subtitle">
-                L'Intelligence Artificielle n'est plus un luxe, c'est une nécessité pour rester compétitif 
-                dans le marché marocain moderne de la distribution et de la quincaillerie.
+                الذكاء الاصطناعي ماشي ترف، ولكن ضرورة باش تبقا منافس 
+                فالسوق المغربي الحديث للتوزيع ومحلات .
             </p>
         </div>
         <div class="benefits-grid">
             <div class="benefit-card fade-in">
                 <div class="benefit-icon">🔧</div>
-                <h3>Prédiction Intelligente</h3>
-                <p>L'IA analyse vos données pour prédire les tendances de vente, optimiser vos stocks et anticiper les besoins de vos clients avant même qu'ils ne s'en rendent compte.</p>
+                <h3>التنبؤ الذكي</h3>
+                <p>الذكاء الاصطناعي كيحلل البيانات ديالك باش يتنبأ بالاتجاهات ديال البيع، ويحسن المخزون ديالك ويتوقع حاجيات العملاء ديالك قبل ما يحسوا بيها.</p>
             </div>
             <div class="benefit-card fade-in">
                 <div class="benefit-icon">⚙️</div>
-                <h3>Automatisation Avancée</h3>
-                <p>Automatisez vos tâches répétitives : gestion des commandes, suivi des stocks, relances clients. L'IA travaille 24h/24 pour votre business.</p>
+                <h3>الأتمتة المتقدمة</h3>
+                <p>أتمت المهام المتكررة ديالك: إدارة الطلبات، متابعة المخزون، تذكير العملاء. الذكاء الاصطناعي كيخدم 24 ساعة على 24 للبيزنس ديالك.</p>
             </div>
             <div class="benefit-card fade-in">
                 <div class="benefit-icon">📊</div>
-                <h3>Insights en Temps Réel</h3>
-                <p>Obtenez des analyses pointues de vos performances, identifiez les opportunités et prenez des décisions basées sur des données concrètes.</p>
+                <h3>رؤى فورية</h3>
+                <p>احصل على تحاليل دقيقة للأداء ديالك، حدد الفرص واتخذ قرارات مبنية على معطيات حقيقية.</p>
             </div>
             <div class="benefit-card fade-in">
                 <div class="benefit-icon">🎯</div>
-                <h3>Personnalisation Client</h3>
-                <p>L'IA segmente vos clients et personnalise vos offres pour maximiser vos taux de conversion et fidéliser votre clientèle.</p>
+                <h3>تخصيص العملاء</h3>
+                <p>الذكاء الاصطناعي كيقسم العملاء ديالك ويخصص العروض ديالك باش يزيد معدلات التحويل ويحافظ على ولاء العملاء.</p>
             </div>
             <div class="benefit-card fade-in">
                 <div class="benefit-icon">🔨</div>
-                <h3>Optimisation des Prix</h3>
-                <p>Ajustez vos prix en temps réel selon la demande, la concurrence et vos objectifs de marge pour maximiser votre rentabilité.</p>
+                <h3>تحسين الأسعار</h3>
+                <p>عدل الأسعار ديالك فوقتها بناء على الطلب والمنافسة وأهداف الربح ديالك باش تزيد الربحية.</p>
             </div>
             <div class="benefit-card fade-in">
                 <div class="benefit-icon">🚀</div>
-                <h3>Avantage Concurrentiel</h3>
-                <p>Dépassez vos concurrents avec des outils d'IA qui vous donnent longueur d'avance sur votre marché local et national.</p>
+                <h3>ميزة تنافسية</h3>
+                <p>فوت على المنافسين ديالك بأدوات الذكاء الاصطناعي اللي كتعطيك تقدم فالسوق المحلي والوطني.</p>
             </div>
         </div>
     </section>
@@ -1327,19 +1422,19 @@
     <!-- Movement Section -->
     <section class="movement">
         <div class="movement-content">
-            <div class="urgency-badge">🚨 URGENT : Le train de l'IA ne vous attendra pas</div>
-            <h2>Rejoignez le Mouvement du Maintenant</h2>
+            <div class="urgency-badge">🚨 عاجل: قطار الذكاء الاصطناعي ماغاديش ينتظرك</div>
+            <h2>انضم لحركة دابا</h2>
             <p>
-                Chaque jour qui passe sans IA, c'est un jour de retard sur vos concurrents. 
-                Les leaders d'aujourd'hui sont ceux qui ont embrassé l'Intelligence Artificielle MAINTENANT.
+                كل يوم كيفوت بلا الذكاء الاصطناعي، راه يوم تأخير على المنافسين ديالك. 
+                القادة ديال اليوم هوما اللي تبناو الذكاء الاصطناعي دابا.
             </p>
             <p>
-                <strong>Ne soyez pas spectateur de votre propre succès.</strong> 
-                Saisissez cette opportunité historique de transformer votre quincaillerie en business du futur.
+                <strong>ماتكونش متفرج على النجاح ديالك.</strong> 
+                اغتنم هاد الفرصة التاريخية باش تحول محل  ديالك لبيزنس ديال المستقبل.
             </p>
             <div class="hero-cta" style="justify-content: center; margin-top: 2rem;">
                 <a href="javascript:void(0)" onclick="openModal()" class="btn-primary" style="background: var(--gradient-accent); font-size: 1.1rem;">
-                    🔥 Je Veux l'IA Maintenant
+                    🔥 بغيت الذكاء الاصطناعي دابا
                 </a>
             </div>
         </div>
@@ -1348,60 +1443,60 @@
     <!-- Features Section -->
     <section class="features" id="fonctionnalites">
         <div class="section-header">
-            <h2 class="section-title">DrogPulseAI en Action</h2>
-            <p class="section-subtitle">Découvrez comment notre IA révolutionne chaque aspect de votre business</p>
+            <h2 class="section-title">DrogPulseAi فالعمل</h2>
+            <p class="section-subtitle">اكتشف كيفاش الذكاء الاصطناعي ديالنا كيثور كل جانب من البيزنس ديالك</p>
         </div>
         
         <div class="features-grid">
             <div class="feature-content fade-in">
-                <h3>🤖 Assistant IA Personnel</h3>
-                <p>Votre assistant intelligent vous guide dans toutes vos décisions business.</p>
+                <h3>🤖 مساعد ذكي شخصي</h3>
+                <p>المساعد الذكي ديالك كيوجهك فجميع القرارات ديال البيزنس.</p>
                 <ul class="feature-list">
-                    <li>Recommandations de produits intelligentes</li>
-                    <li>Alertes automatiques sur les opportunités</li>
-                    <li>Suggestions d'optimisation personnalisées</li>
-                    <li>Réponses instantanées à vos questions business</li>
+                    <li>توصيات ذكية للمنتجات</li>
+                    <li>تنبيهات تلقائية للفرص</li>
+                    <li>اقتراحات تحسين مخصصة</li>
+                    <li>إجابات فورية لأسئلة البيزنس ديالك</li>
                 </ul>
             </div>
             <div class="feature-visual fade-in">
-                <h4 style="color: var(--primary); margin-bottom: 1rem;">💡 IA Assistant</h4>
-                <p style="color: var(--text-light);">"Votre stock de vis inox diminue. Je recommande une commande de 500 unités basée sur vos ventes des 3 derniers mois."</p>
+                <h4 style="color: var(--primary); margin-bottom: 1rem;">💡 المساعد الذكي</h4>
+                <p style="color: var(--text-light);">"المخزون ديال المسامير الإنوكس كينقص. كننصح بطلبية ديال 500 وحدة بناء على المبيعات ديال 3 شهور اللي فاتو."</p>
             </div>
         </div>
 
         <div class="features-grid">
             <div class="feature-visual fade-in">
-                <h4 style="color: var(--primary); margin-bottom: 1rem;">📈 Tableau de Bord IA</h4>
+                <h4 style="color: var(--primary); margin-bottom: 1rem;">📈 لوحة التحكم الذكية</h4>
                 <div style="background: var(--gradient-primary); height: 100px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; margin: 1rem 0;">
-                    <span>Analytics en Temps Réel</span>
+                    <span>تحليلات فورية</span>
                 </div>
             </div>
             <div class="feature-content fade-in">
-                <h3>📊 Analytics Prédictifs</h3>
-                <p>L'IA transforme vos données en insights actionnables.</p>
+                <h3>📊 تحليلات تنبؤية</h3>
+                <p>الذكاء الاصطناعي كيحول البيانات ديالك لرؤى قابلة للتنفيذ.</p>
                 <ul class="feature-list">
-                    <li>Prévisions de vente précises à 30 jours</li>
-                    <li>Analyse comportementale de vos clients</li>
-                    <li>Détection automatique des tendances émergentes</li>
-                    <li>Optimisation automatique de vos stocks</li>
+                    <li>توقعات مبيعات دقيقة ل30 يوم</li>
+                    <li>تحليل سلوك العملاء ديالك</li>
+                    <li>اكتشاف تلقائي للاتجاهات الناشئة</li>
+                    <li>تحسين تلقائي للمخزون ديالك</li>
                 </ul>
             </div>
         </div>
 
         <div class="features-grid">
             <div class="feature-content fade-in">
-                <h3>🎯 Marketing IA</h3>
-                <p>L'IA révolutionne votre approche marketing avec une précision chirurgicale.</p>
+                <h3>🎯 تسويق بالذكاء الاصطناعي</h3>
+                <p>الذكاء الاصطناعي كيثور النهج التسويقي ديالك بدقة جراحية.</p>
                 <ul class="feature-list">
-                    <li>Segmentation automatique de vos clients</li>
-                    <li>Campagnes personnalisées auto-générées</li>
-                    <li>Timing optimal pour vos communications</li>
-                    <li>Prédiction des besoins clients futurs</li>
+                    <li>تقسيم تلقائي للعملاء ديالك</li>
+                    <li>حملات مخصصة تلقائية</li>
+                    <li>التوقيت الأمثل للتواصل ديالك</li>
+                    <li>التنبؤ بحاجيات العملاء المستقبلية</li>
                 </ul>
             </div>
             <div class="feature-visual fade-in">
-                <h4 style="color: var(--primary); margin-bottom: 1rem;">🎯 Ciblage IA</h4>
-                <p style="color: var(--text-light);">"Client Type A : Préfère acheter le mardi matin, budget moyen 150€, intéressé par l'électricité."</p>
+                <h4 style="color: var(--primary); margin-bottom: 1rem;">🎯 الاستهداف الذكي</h4>
+                <p style="color: var(--text-light);">"العميل النوع أ: كيفضل الشراء نهار الثلاثا فالصباح، الميزانية ديالو متوسط 150 يورو، مهتم بالكهرباء."</p>
             </div>
         </div>
     </section>
@@ -1409,30 +1504,30 @@
     <!-- Testimonials Section -->
     <section class="testimonials" id="temoignages">
         <div class="section-header">
-            <h2 class="section-title">Ils ont Choisi l'IA, Ils Dominent leur Marché</h2>
-            <p class="section-subtitle">Découvrez comment nos clients transforment leur business avec DrogPulseAI</p>
+            <h2 class="section-title">هوما اختارو الذكاء الاصطناعي، وهوما اللي مسيطرين على السوق ديالهم</h2>
+            <p class="section-subtitle">اكتشف كيفاش العملاء ديالنا كيحولو البيزنس ديالهم مع DrogPulseAi</p>
         </div>
         <div class="testimonial-grid">
             <div class="testimonial-card fade-in">
                 <div class="testimonial-text">
-                    Depuis que j'utilise DrogPulseAI, mes ventes ont explosé de 78%. L'IA anticipe parfaitement les besoins de mes clients. C'est magique !
+                    من لما بديت نستعمل DrogPulseAi، المبيعات ديالي طلعو ب 78%. الذكاء الاصطناعي كيتوقع حاجيات العملاء ديالي بشكل مثالي. هادشي سحر!
                 </div>
-                <div class="testimonial-author">Ahmed Benali</div>
-                <div class="testimonial-company">Quincaillerie Moderne - Casablanca</div>
+                <div class="testimonial-author">أحمد بنعلي</div>
+                <div class="testimonial-company">محل  العصري - الدار البيضاء</div>
             </div>
             <div class="testimonial-card fade-in">
                 <div class="testimonial-text">
-                    L'IA me fait gagner 4 heures par jour. Plus de ruptures de stock, plus d'erreurs. Mon business tourne comme une horloge suisse !
+                    الذكاء الاصطناعي كيربحلي 4 ساعات فالنهار. مابقاش كاين نقص فالمخزون، مابقاش كاين أخطاء. البيزنس ديالي كيخدم بحال الساعة السويسرية!
                 </div>
-                <div class="testimonial-author">Fatima Zahra</div>
-                <div class="testimonial-company">Distribution Atlas - Rabat</div>
+                <div class="testimonial-author">فاطمة الزهراء</div>
+                <div class="testimonial-company">توزيع الأطلس - الرباط</div>
             </div>
             <div class="testimonial-card fade-in">
                 <div class="testimonial-text">
-                    En 6 mois avec DrogPulseAI, j'ai ouvert 2 nouveaux points de vente. L'IA m'a donné la confiance pour grandir rapidement.
+                    ف6 شهور مع DrogPulseAi، حليت 2 محلات جداد. الذكاء الاصطناعي عطاني الثقة باش نكبر بزربة.
                 </div>
-                <div class="testimonial-author">Youssef Karimi</div>
-                <div class="testimonial-company">Groupe Quincaillerie Plus</div>
+                <div class="testimonial-author">يوسف كريمي</div>
+                <div class="testimonial-company">مجموعة محلات  بلوس</div>
             </div>
         </div>
     </section>
@@ -1440,20 +1535,20 @@
     <!-- Final CTA Section -->
     <section class="final-cta" id="demo">
         <div class="cta-content">
-            <h2>Votre Future Commence Maintenant</h2>
+            <h2>المستقبل ديالك كيبدا دابا</h2>
             <p>
-                Ne laissez pas vos concurrents prendre l'avantage. 
-                Rejoignez les leaders qui transforment leur business avec l'IA.
+                ماتخلي المنافسين ديالك يتقدمو عليك. 
+                انضم للقادة اللي كيحولو البيزنس ديالهم بالذكاء الاصطناعي.
             </p>
             <div class="urgency-badge" style="margin-bottom: 2rem;">
-                ⏰ Offre Limitée : Formation IA Gratuite pour les 50 Premiers
+                ⏰ عرض محدود: تكوين مجاني فالذكاء الاصطناعي لأول 50 واحد
             </div>
             <div class="cta-buttons">
-                <a href="javascript:void(0)" onclick="openModal()" class="btn-large btn-white">🚀 Démarrer ma Transformation IA</a>
-                <a href="javascript:void(0)" onclick="openModal()" class="btn-large btn-transparent">📞 Parler à un Expert IA</a>
+                <a href="javascript:void(0)" onclick="openModal()" class="btn-large btn-white">🚀 ابدا التحول ديالي بالذكاء الاصطناعي</a>
+                <a href="javascript:void(0)" onclick="openModal()" class="btn-large btn-transparent">📞 هدر مع خبير الذكاء الاصطناعي</a>
             </div>
             <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
-                ✅ Installation en 24h • ✅ Formation incluse • ✅ Support 7j/7
+                ✅ التثبيت ف24 ساعة • ✅ التكوين مضمن • ✅ الدعم 7/7
             </p>
         </div>
     </section>
@@ -1463,82 +1558,82 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button class="modal-close" onclick="closeModal()">&times;</button>
-                <h2>🚀 Démarrez Votre Transformation IA</h2>
-                <p>Contactez-nous dès maintenant pour votre démo personnalisée</p>
+                <h2>🚀 ابدا التحول ديالك بالذكاء الاصطناعي</h2>
+                <p>اتصل بينا دابا للعرض التوضيحي المخصص ديالك</p>
             </div>
             <div class="modal-body">
                 <div class="contact-section">
-                    <h3>📧 Email Principal</h3>
+                    <h3>البريد الإلكتروني الرئيسي 📧</h3>
                     <div class="contact-item">
-                        <div class="contact-icon">✉️</div>
                         <div class="contact-info">
-                            <div class="contact-label">Support & Démos</div>
+                            <div class="contact-label">الدعم والعروض التوضيحية</div>
                             <div class="contact-value">
                                 <a href="mailto:drogpulseai@gmail.com" class="contact-link">
                                     drogpulseai@gmail.com
                                 </a>
                             </div>
                         </div>
+                        <div class="contact-icon">✉️</div>
                     </div>
                 </div>
 
                 <div class="contact-section">
-                    <h3>📞 Contacts Téléphoniques</h3>
+                    <h3>أرقام الهاتف 📞</h3>
                     
                     <div class="contact-item">
-                        <div class="contact-icon">🇫🇷</div>
                         <div class="contact-info">
-                            <div class="contact-label">France</div>
+                            <div class="contact-label">فرنسا</div>
                             <div class="contact-value">
                                 <a href="tel:+33663939478" class="contact-link">
                                     +33 663 93 94 78
                                 </a>
                             </div>
                         </div>
+                        <div class="contact-icon">🇫🇷</div>
                     </div>
 
                     <div class="contact-item">
-                        <div class="contact-icon">🇪🇸</div>
                         <div class="contact-info">
-                            <div class="contact-label">Espagne</div>
+                            <div class="contact-label">إسبانيا</div>
                             <div class="contact-value">
                                 <a href="tel:+34621040336" class="contact-link">
                                     +34 621 04 03 36
                                 </a>
                             </div>
                         </div>
+                        <div class="contact-icon">🇪🇸</div>
                     </div>
 
                     <div class="contact-item">
-                        <div class="contact-icon">🇲🇦</div>
                         <div class="contact-info">
-                            <div class="contact-label">Maroc</div>
+                            <div class="contact-label">المغرب</div>
                             <div class="contact-value">
                                 <a href="tel:0212663530870" class="contact-link">
                                     0212 663 53 08 70
                                 </a>
                             </div>
                         </div>
+                        <div class="contact-icon">🇲🇦</div>
                     </div>
                 </div>
 
                 <div class="contact-section">
-                    <h3>⚡ Réponse Rapide</h3>
+                    <h3>رد سريع ⚡</h3>
                     <div class="contact-item">
-                        <div class="contact-icon">🚀</div>
                         <div class="contact-info">
-                            <div class="contact-label">Délai de réponse</div>
-                            <div class="contact-value">Moins de 2 heures en semaine</div>
+                            <div class="contact-label">مدة الرد</div>
+                            <div class="contact-value">أقل من ساعتين فأيام الأسبوع</div>
                         </div>
+                        <div class="contact-icon">🚀</div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <div class="availability-badge">
-                    ✅ Équipe disponible 7j/7 pour vos questions
+                    ✅ الفريق متاح 7/7 للأسئلة ديالكم
                 </div>
                 <p style="margin-top: 1rem; color: var(--text-light); font-size: 0.9rem;">
-                    Démo personnalisée • Installation 24h • Formation incluse
+                    عرض توضيحي مخصص • التثبيت ف24 ساعة • التكوين مضمن
                 </p>
             </div>
         </div>
@@ -1548,52 +1643,52 @@
     <footer id="contact">
         <div class="footer-content">
             <div class="footer-section">
-                <h4>DrogPulseAI</h4>
+                <h4>DrogPulseAi</h4>
                 <p style="color: rgba(255,255,255,0.7); margin-bottom: 1rem;">
-                    L'Intelligence Artificielle au service de votre quincaillerie.
+                    الذكاء الاصطناعي فخدمة محل  ديالك.
                 </p>
                 <p style="color: rgba(255,255,255,0.7);">
-                    Transformez votre business avec l'IA la plus avancée du marché.
+                    حول البيزنس ديالك بأقوى ذكاء اصطناعي فالسوق.
                 </p>
             </div>
             <div class="footer-section">
-                <h4>Solutions IA</h4>
-                <a href="#">Assistant IA Personnel</a>
-                <a href="#">Analytics Prédictifs</a>
-                <a href="#">Marketing Automatisé</a>
-                <a href="#">Optimisation Stocks</a>
+                <h4>حلول الذكاء الاصطناعي</h4>
+                <a href="#">مساعد ذكي شخصي</a>
+                <a href="#">تحليلات تنبؤية</a>
+                <a href="#">تسويق تلقائي</a>
+                <a href="#">تحسين المخزون</a>
             </div>
             <div class="footer-section">
-                <h4>Support</h4>
-                <a href="#">Formation IA</a>
-                <a href="#">Support 24/7</a>
-                <a href="#">Documentation</a>
-                <a href="#">Communauté</a>
+                <h4>الدعم</h4>
+                <a href="#">تكوين الذكاء الاصطناعي</a>
+                <a href="#">دعم 24/7</a>
+                <a href="#">التوثيق</a>
+                <a href="#">المجتمع</a>
             </div>
             <div class="footer-section">
-                <h4>Contact</h4>
+                <h4>اتصل بنا</h4>
                 <div class="contact-info">
                     <a href="mailto:drogpulseai@gmail.com">✉️ drogpulseai@gmail.com</a>
                 </div>
                 <div class="contact-info">
-                    <div class="contact-country">🇫🇷 France</div>
+                    <div class="contact-country">🇫🇷 فرنسا</div>
                     <a href="tel:+33663939478">📞 +33 663 93 94 78</a>
                 </div>
                 <div class="contact-info">
-                    <div class="contact-country">🇪🇸 Espagne</div>
+                    <div class="contact-country">🇪🇸 إسبانيا</div>
                     <a href="tel:+34621040336">📞 +34 621 04 03 36</a>
                 </div>
                 <div class="contact-info">
-                    <div class="contact-country">🇲🇦 Maroc</div>
+                    <div class="contact-country">🇲🇦 المغرب</div>
                     <a href="tel:0212663530870">📞 0212 663 53 08 70</a>
                 </div>
                 <div style="margin-top: 1rem;">
-                    <a href="javascript:void(0)" onclick="openModal()" style="background: var(--gradient-accent); padding: 0.5rem 1rem; border-radius: 25px; color: white; font-weight: 600;">Demander une Démo</a>
+                    <a href="javascript:void(0)" onclick="openModal()" style="background: var(--gradient-accent); padding: 0.5rem 1rem; border-radius: 25px; color: white; font-weight: 600;">طلب عرض توضيحي</a>
                 </div>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2025 DrogPulseAI - Laridak Holding. Quand la droguerie marocaine bat au rythme de l'intelligence.</p>
+            <p>&copy; 2025 DrogPulseAi - العريضة القابضة. فاش محل  المغربي كيخدم بنبضة الذكاء.</p>
         </div>
     </footer>
 
@@ -1749,6 +1844,23 @@
         if (statsSection) {
             statsObserver.observe(statsSection);
         }
+
+        // Force carousel animation to start
+        document.addEventListener('DOMContentLoaded', function() {
+            const carousel = document.querySelector('.screenshot-carousel');
+            if (carousel) {
+                // Ensure animation runs by applying it programmatically
+                carousel.style.animation = 'slideshow 16s infinite ease-in-out';
+                
+                // Handle image load errors
+                const images = carousel.querySelectorAll('img');
+                images.forEach(img => {
+                    img.addEventListener('error', function() {
+                        this.style.display = 'none';
+                    });
+                });
+            }
+        });
     </script>
 </body>
 </html>
