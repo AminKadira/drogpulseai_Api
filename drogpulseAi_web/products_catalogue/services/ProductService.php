@@ -16,6 +16,25 @@ class ProductService
         $this->db = $db;
     }
     
+   public function getUserInfo(int $userId): ?array 
+    {
+        try {
+            $pdo = $this->db->getConnection();
+            
+            $sql = "SELECT nom, prenom, telephone, email FROM users WHERE id = :user_id";
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $result ?: null;
+            
+        } catch (PDOException $e) {
+            error_log("Error getting user info: " . $e->getMessage());
+            return null;
+        }
+    }
+        
    public function getCatalogueData(array $filters): array 
     {
         try {
@@ -62,10 +81,10 @@ class ProductService
                     p.*,
                     u.nom as owner_nom, 
                     u.prenom as owner_prenom, 
-                    u.email as owner_email
+                    u.telephone as owner_telephone
                 FROM products p
                 LEFT JOIN users u ON p.user_id = u.id
-                WHERE p.id = :product_id
+                WHERE p.id = :product_id AND u.id = '9'
             ";
             
             $stmt = $pdo->prepare($sql);
@@ -102,6 +121,7 @@ class ProductService
         ";
         
         $whereConditions = $this->buildWhereConditions($filters);
+         $whereConditions[] = "p.user_id = 9";   
         if (!empty($whereConditions)) {
             $sql .= " WHERE " . implode(" AND ", $whereConditions);
         }
@@ -121,6 +141,7 @@ class ProductService
         $sql = "SELECT COUNT(DISTINCT p.id) FROM products p";
         
         $whereConditions = $this->buildWhereConditions($filters);
+        $whereConditions[] = "p.user_id = 9";  
         if (!empty($whereConditions)) {
             $sql .= " WHERE " . implode(" AND ", $whereConditions);
         }
@@ -183,8 +204,7 @@ class ProductService
                 ps.*,
                 c.nom,
                 c.prenom,
-                c.telephone,
-                c.email
+                c.telephone
             FROM product_suppliers ps
             JOIN contacts c ON ps.contact_id = c.id
             WHERE ps.product_id = :product_id AND ps.is_active = 1
@@ -227,7 +247,7 @@ class ProductService
             'owner' => [
                 'nom' => $product['owner_nom'],
                 'prenom' => $product['owner_prenom'],
-                'email' => $product['owner_email']
+                'telephone' => $product['owner_telephone']
             ],
             'suppliers' => $suppliers
         ];

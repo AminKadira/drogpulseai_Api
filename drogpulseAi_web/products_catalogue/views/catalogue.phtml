@@ -24,14 +24,99 @@
             --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
         }
 
-        /* Header styling */
+        /* Header layout adapté */
         .page-header {
             background: linear-gradient(135deg, var(--primary) 0%, #1d4ed8 100%);
             color: white;
-            padding: 2rem 0;
+            padding: 2.5rem 0;
             margin-bottom: 2rem;
         }
-
+        
+        /* Logo + nom à gauche */
+        .header-logo {
+            max-height: 180px;
+            max-width: 200px;
+            height: auto;
+            width: auto;
+            object-fit: contain;
+        }
+        
+        .logo-container {
+            flex-shrink: 0;
+        }
+        
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        
+        /* Texte à droite */
+        .header-text {
+            text-align: right;
+        }
+        
+        .header-text p {
+            font-size: 1.125rem;
+            margin-bottom: 0.75rem;
+            font-weight: 300;
+        }
+        
+        .header-text .badge {
+            font-weight: 600;
+            border-radius: 50px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Version mobile */
+        @media (max-width: 768px) {
+            .page-header {
+                padding: 2rem 0;
+            }
+            
+            .row {
+                flex-direction: column;
+                text-align: center;
+                gap: 1.5rem;
+            }
+            
+            .col-md-6:first-child {
+                justify-content: center;
+                margin-bottom: 1rem;
+            }
+            
+            .col-md-6:last-child {
+                text-align: center !important;
+            }
+            
+            .header-text {
+                text-align: center;
+            }
+            
+            .header-logo {
+                max-height: 60px;
+                max-width: 150px;
+            }
+            
+            .page-header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .header-text p {
+                font-size: 1rem;
+            }
+        }
+        
+        /* Version tablette */
+        @media (max-width: 992px) and (min-width: 769px) {
+            .header-text p {
+                font-size: 1rem;
+            }
+            
+            .page-header h1 {
+                font-size: 1.75rem;
+            }
+        }
         /* Filters section */
         .filters-section {
             background: var(--gray-50);
@@ -211,36 +296,226 @@
                 padding: 1.5rem 0;
             }
         }
+        /* Layout avec sidebar */
+        .page-layout {
+            display: flex;
+            min-height: calc(100vh - 200px);
+            position: relative;
+        }
+        
+        /* Sidebar contact */
+        .contact-sidebar {
+            position: sticky;
+            top: 20px;
+            width: 280px;
+            height: fit-content;
+            flex-shrink: 0;
+            margin-right: 20px;
+            z-index: 100;
+        }
+        
+        .sidebar-content {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+        
+        .contact-card {
+            padding: 1.5rem;
+        }
+        
+        .contact-header {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .contact-header h5 {
+            color: #1f2937;
+            font-weight: 600;
+        }
+        
+        .contact-info {
+            text-align: center;
+        }
+        
+        .contact-name {
+            font-size: 1.1rem;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .contact-phone {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .phone-link {
+            color: #059669;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .phone-link:hover {
+            color: #047857;
+            text-decoration: underline;
+        }
+        
+        .order-message {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            margin: 0 -1.5rem -1.5rem -1.5rem;
+        }
+        
+        .message-icon {
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Contenu principal */
+        .main-content {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .page-layout {
+                flex-direction: column;
+            }
+            
+            .contact-sidebar {
+                position: relative;
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 2rem;
+                top: 0;
+            }
+            
+            .sidebar-content {
+                margin: 0 1rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .contact-card {
+                padding: 1rem;
+            }
+            
+            .order-message {
+                margin: 0 -1rem -1rem -1rem;
+                padding: 0.75rem;
+            }
+        }
+        
+        /* Animation hover */
+        .contact-card {
+            transition: transform 0.2s ease;
+        }
+        
+        .contact-card:hover {
+            transform: translateY(-2px);
+        }
+        
     </style>
 </head>
 <body>
-<!-- Header avec logo -->
-<header class="page-header">
+    <header class="page-header">
     <div class="container">
         <div class="row align-items-center">
-            <div class="col-md-8 d-flex align-items-center">
-                <!-- Logo -->
+            <!-- Gauche : Logo + Nom -->
+            <div class="col-md-6 d-flex align-items-center">
                 <div class="logo-container me-3">
-                    <img src="/assets/images/logo.png" 
+                    <img src="assets/images/logo.png" 
                          alt="<?= htmlspecialchars($config['app']['name']) ?>" 
-                         class="header-logo"
-                         onerror="this.style.display='none'">
+                         class="header-logo">
                 </div>
-                
-                <!-- Texte -->
                 <div>
-                    <h1 class="mb-0">Catalogue Produits</h1>
-                    <p class="mb-0 opacity-75 mt-2">Découvrez notre sélection de produits de qualité</p>
+                    <h1 class="mb-0"><?= htmlspecialchars($config['app']['name']) ?></h1>
+                    <small class="text-light opacity-75">Catalogue Professionnel</small>
                 </div>
             </div>
-            <div class="col-md-4 text-md-end">
-                <span class="badge bg-light text-dark fs-6"><?= number_format($totalCount) ?> produits</span>
+            
+            <!-- Droite : Texte descriptif + compteur -->
+            <div class="col-md-6 text-md-end">
+                <div class="header-text">
+                    <p class="mb-1 fs-5">Découvrez notre sélection de produits de qualité</p>
+                    <span class="badge bg-light text-primary fs-6 px-3 py-2">
+                        <i class="bi bi-box-seam me-1"></i>
+                        <?= number_format($totalCount) ?> produits disponibles
+                    </span>
+                </div>
             </div>
         </div>
     </div>
 </header>
+    
+    <!-- Layout avec sidebar -->
+    <div class="page-layout">
+        <!-- Sidebar contact -->
+        <aside class="contact-sidebar">
+            <div class="sidebar-content">
+                
+                <?php if ($userInfo): ?>
+                    <div class="contact-card">
+                        <div class="contact-header">
+                            <i class="bi bi-person-circle fs-2 text-primary mb-2"></i>
+                            <h5 class="mb-1">Géré par</h5>
+                        </div>
+                        
+                        <div class="contact-info">
+                            <div class="contact-name">
+                                <strong><?= htmlspecialchars(trim($userInfo['prenom'] . ' ' . $userInfo['nom'])) ?></strong>
+                            </div>
+                            
+                            <?php if (!empty($userInfo['telephone'])): ?>
+                            <div class="contact-phone mt-2">
+                                <i class="bi bi-telephone-fill text-success me-2"></i>
+                                <a href="tel:<?= htmlspecialchars($userInfo['telephone']) ?>" class="phone-link">
+                                    <?= htmlspecialchars($userInfo['telephone']) ?>
+                                </a>
+                            </div>
+                            <?php endif; ?>
+                        </div>
+                        
+                        <hr class="my-3">
+                        
+                        <div class="order-message">
+                            <div class="message-icon mb-2">
+                                <i class="bi bi-cart-plus fs-4 text-primary"></i>
+                            </div>
+                            <p class="small text-muted mb-2">
+                                <strong>Pour passer commande :</strong>
+                            </p>
+                            <p class="small">
+                                Merci de contacter<br>
+                                <strong><?= htmlspecialchars($userInfo['prenom']) ?></strong>
+                                <?php if (!empty($userInfo['telephone'])): ?>
+                                <br>au <strong><?= htmlspecialchars($userInfo['telephone']) ?></strong>
+                                <?php endif; ?>
+                            </p>
+                            
+                            <?php if (!empty($userInfo['telephone'])): ?>
+                            <a href="tel:<?= htmlspecialchars($userInfo['telephone']) ?>" 
+                               class="btn btn-success btn-sm w-100 mt-2">
+                                <i class="bi bi-telephone-fill me-1"></i>
+                                Appeler maintenant
+                            </a>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </aside>
 
-    <div class="container">
+
+
+    <!-- Contenu principal -->
+    <main class="main-content">
+        <div class="container">
         <!-- Filtres -->
         <section class="filters-section">
             <form method="GET" id="filtersForm" class="row g-3">
@@ -253,7 +528,7 @@
                            value="<?= htmlspecialchars($filters['search']) ?>"
                            maxlength="<?= $config['catalogue']['max_search_length'] ?>">
                 </div>
-                
+                <!--
                 <div class="col-md-2">
                     <label for="min_price" class="form-label fw-semibold">Prix min</label>
                     <input type="number" class="form-control" id="min_price" name="min_price" 
@@ -277,7 +552,7 @@
                         <option value="out_of_stock" <?= $filters['stock_filter'] === 'out_of_stock' ? 'selected' : '' ?>>Rupture</option>
                     </select>
                 </div>
-                
+                -->
                 <div class="col-md-2 d-flex align-items-end">
                     <div class="d-grid w-100 gap-2">
                         <button type="submit" class="btn btn-primary">
@@ -327,12 +602,13 @@
                         <i class="bi bi-sort-alpha-down"></i> Trier par
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="?<?= http_build_query(array_merge($_GET, ['sort' => 'reference', 'dir' => 'asc'])) ?>">
-                            Référence A-Z
-                        </a></li>
                         <li><a class="dropdown-item" href="?<?= http_build_query(array_merge($_GET, ['sort' => 'name', 'dir' => 'asc'])) ?>">
                             Nom A-Z
                         </a></li>
+                        <li><a class="dropdown-item" href="?<?= http_build_query(array_merge($_GET, ['sort' => 'reference', 'dir' => 'asc'])) ?>">
+                            Référence A-Z
+                        </a></li>
+
                         <li><a class="dropdown-item" href="?<?= http_build_query(array_merge($_GET, ['sort' => 'prix_vente_conseille', 'dir' => 'asc'])) ?>">
                             Prix croissant
                         </a></li>
@@ -382,7 +658,6 @@
                 <div class="product-info">
                     <h3 class="product-name"><?= htmlspecialchars($product['name']) ?></h3>
                     <p class="product-reference">Réf: <?= htmlspecialchars($product['reference']) ?></p>
-                    <div class="product-price"><?= $product['formatted_price'] ?></div>
                     <div class="d-flex justify-content-between align-items-center mt-auto">
                         <span class="badge badge-<?= $product['stock_status']['class'] ?>">
                             <?= $product['stock_status']['label'] ?>
@@ -431,7 +706,8 @@
         </nav>
         <?php endif; ?>
     </div>
-
+    </main> <!-- Fin main-content -->
+    </div> <!-- Fin page-layout -->
     <!-- Modal détails produit -->
     <div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
